@@ -1,5 +1,7 @@
 package diplomaProject.shop2.dto;
 
+import diplomaProject.shop2.model.Product;
+
 import java.math.BigDecimal;
 
 public class ProductDTO {
@@ -22,6 +24,15 @@ public class ProductDTO {
         this.productName = productName;
         this.productDescription = productDescription;
         this.price = price;
+    }
+
+    public static Product toProduct (ProductDTO product) {
+        return new Product (
+                product.getId (),
+                product.getProductName (),
+                product.getProductDescription (),
+                product.getPrice ()
+        );
     }
 
     public Long getId () {
