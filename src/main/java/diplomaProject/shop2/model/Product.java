@@ -19,7 +19,7 @@ public class Product {
 
     //описание товара
     //стандарный String ограничен в 255 charts
-    private String productDiscription;
+    private String productDescription;
 
     //цена товара
     private BigDecimal price;
@@ -42,12 +42,12 @@ public class Product {
         this.productName = productName;
     }
 
-    public String getProductDiscription () {
-        return productDiscription;
+    public String getProductDescription () {
+        return productDescription;
     }
 
-    public void setProductDiscription (String productDiscription) {
-        this.productDiscription = productDiscription;
+    public void setProductDescription (String productDescription) {
+        this.productDescription = productDescription;
     }
 
     public BigDecimal getPrice () {
