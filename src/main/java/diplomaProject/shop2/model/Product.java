@@ -27,6 +27,13 @@ public class Product {
 
     public Product(){}
 
+    public Product (Long id, String productName, String productDescription, BigDecimal price) {
+        this.id = id;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.price = price;
+    }
+
     public static ProductDTO toDTO (Product productFromDB) {
         return new ProductDTO (
                 productFromDB.getId (),
