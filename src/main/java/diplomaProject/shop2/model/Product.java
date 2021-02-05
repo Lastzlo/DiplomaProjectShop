@@ -1,6 +1,7 @@
 package diplomaProject.shop2.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import diplomaProject.shop2.dto.ProductDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,15 @@ public class Product {
     private BigDecimal price;
 
     public Product(){}
+
+    public static ProductDTO toDTO (Product productFromDB) {
+        return new ProductDTO (
+                productFromDB.getId (),
+                productFromDB.getProductName (),
+                productFromDB.getProductDescription (),
+                productFromDB.getPrice ()
+        );
+    }
 
     public Long getId () {
         return id;
