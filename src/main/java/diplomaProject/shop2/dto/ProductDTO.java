@@ -15,6 +15,15 @@ public class ProductDTO {
     //цена товара
     private BigDecimal price;
 
+    public ProductDTO(){}
+
+    public ProductDTO (Long id, String productName, String productDescription, BigDecimal price) {
+        this.id = id;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.price = price;
+    }
+
     public Long getId () {
         return id;
     }
