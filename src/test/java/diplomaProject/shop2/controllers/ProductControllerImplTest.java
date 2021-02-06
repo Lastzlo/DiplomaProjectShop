@@ -91,4 +91,34 @@ class ProductControllerImplTest {
         Assertions.assertTrue (actualProducts.getStatusCode ().is2xxSuccessful ());
         Assertions.assertEquals (productDTOS, actualProducts.getBody ());
     }
+
+    @Test
+    void deleteProduct_whenProductWasRemoved(){
+        //given
+        final String productId = "10";
+
+        Mockito.when (productService.deleteProductById (productId))
+                .thenReturn (true);
+
+        //when
+        final ResponseEntity responseEntity = productController.deleteProduct (productId);
+
+        //then
+        Assertions.assertTrue (responseEntity.getStatusCode ().is2xxSuccessful ());
+    }
+
+    @Test
+    void deleteProduct_whenProductWasNotRemoved(){
+        //given
+        final String productId = "10";
+
+        Mockito.when (productService.deleteProductById (productId))
+                .thenReturn (false);
+
+        //when
+        final ResponseEntity responseEntity = productController.deleteProduct (productId);
+
+        //then
+        Assertions.assertTrue (responseEntity.getStatusCode ().is4xxClientError ());
+    }
 }
