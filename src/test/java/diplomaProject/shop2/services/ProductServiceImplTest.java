@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 
 @SpringBootTest
 class ProductServiceImplTest {
@@ -52,5 +54,46 @@ class ProductServiceImplTest {
         //then
         Assertions.assertEquals (expectedProductDTO,actualProductDTO);
 
+    }
+
+    @Test
+    void getProducts_whenStoredInDatabase3Item () {
+        //give
+        final List<Product> productsFromDB = new LinkedList<> (){{
+            add (new Product (){{
+                     this.setId (10l);
+                     this.setPrice (new BigDecimal (1000));
+                     this.setProductDescription ("ProductDescription");
+                     this.setProductName ("ProductName");
+                 }}
+            );
+            add (new Product (){{
+                     this.setId (10l);
+                     this.setPrice (new BigDecimal (1000));
+                     this.setProductDescription ("ProductDescription");
+                     this.setProductName ("ProductName");
+                 }}
+            );
+            add (new Product (){{
+                     this.setId (10l);
+                     this.setPrice (new BigDecimal (1000));
+                     this.setProductDescription ("ProductDescription");
+                     this.setProductName ("ProductName");
+                 }}
+            );
+        }};
+
+        Mockito.when (productRepository.findAll ())
+                .thenReturn (productsFromDB);
+
+
+        //when
+        final List<ProductDTO> actualProducts = productService.getProducts ();
+
+        //then
+        Assertions.assertFalse (actualProducts.isEmpty ());
+        Assertions.assertEquals (3, actualProducts.size ());
+
+        Mockito.verify (productRepository, Mockito.times (1)).findAll ();
     }
 }
