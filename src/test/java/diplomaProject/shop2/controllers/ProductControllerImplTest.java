@@ -1,6 +1,7 @@
 package diplomaProject.shop2.controllers;
 
 import diplomaProject.shop2.dto.ProductDTO;
+import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.services.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 
 @SpringBootTest
 class ProductControllerImplTest {
@@ -47,5 +50,45 @@ class ProductControllerImplTest {
         //then
         Assertions.assertTrue (productDTOResponseEntity.getStatusCode ().is2xxSuccessful ());
         Assertions.assertEquals (productDTO, productDTOResponseEntity.getBody ());
+    }
+
+    @Test
+    void products_whenStoredInDatabase3Item () {
+        //give
+        final List<ProductDTO> productDTOS = new LinkedList<> (){{
+            add (new ProductDTO (){{
+                     this.setId (10l);
+                     this.setPrice (new BigDecimal (1000));
+                     this.setProductDescription ("ProductDescription");
+                     this.setProductName ("ProductName");
+                 }}
+            );
+            add (new ProductDTO (){{
+                     this.setId (10l);
+                     this.setPrice (new BigDecimal (1000));
+                     this.setProductDescription ("ProductDescription");
+                     this.setProductName ("ProductName");
+                 }}
+            );
+            add (new ProductDTO (){{
+                     this.setId (10l);
+                     this.setPrice (new BigDecimal (1000));
+                     this.setProductDescription ("ProductDescription");
+                     this.setProductName ("ProductName");
+                 }}
+            );
+        }};
+
+        Mockito.when (productService.getProducts ())
+                .thenReturn (productDTOS);
+
+
+        //when
+        final ResponseEntity<List<ProductDTO>> actualProducts = productController.products ();
+
+
+        //then
+        Assertions.assertTrue (actualProducts.getStatusCode ().is2xxSuccessful ());
+        Assertions.assertEquals (productDTOS, actualProducts.getBody ());
     }
 }
