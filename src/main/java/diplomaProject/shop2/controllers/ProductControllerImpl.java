@@ -18,7 +18,7 @@ public class ProductControllerImpl implements ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("products")
+    @GetMapping("getAllProducts")
     public ResponseEntity<List<ProductDTO>> products(){
         logger.info("ProductControllerImpl.products is executed");
         return ResponseEntity.ok()
