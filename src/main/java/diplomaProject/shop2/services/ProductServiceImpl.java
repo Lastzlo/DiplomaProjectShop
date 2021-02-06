@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> getProducts () {
         final List<Product> products = productRepository.findAll ();
 
-        final List<ProductDTO> productDTOS = new LinkedList<> (){{
+        final List<ProductDTO> productDTOS = new LinkedList<ProductDTO> (){{
             products.forEach (product -> add (Product.toDTO (product)));
         }};
 
