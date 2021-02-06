@@ -8,4 +8,6 @@ public interface ProductService {
     ProductDTO saveProduct (ProductDTO product);
 
     List<ProductDTO> getProducts ();
+
+    boolean deleteProductById (String id);
 }

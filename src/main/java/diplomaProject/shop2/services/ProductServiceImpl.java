@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -32,5 +33,21 @@ public class ProductServiceImpl implements ProductService {
         }};
 
         return productDTOS;
+    }
+
+    @Override
+    public boolean deleteProductById (String id) {
+
+        final long productId = Long.parseLong (id);
+
+        Optional<Product> product = productRepository.findById (productId);
+
+        if (product.isPresent ()){
+            productRepository.delete (product.get ());
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }
