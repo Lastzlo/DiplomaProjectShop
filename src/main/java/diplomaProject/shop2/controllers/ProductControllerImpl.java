@@ -34,4 +34,18 @@ public class ProductControllerImpl implements ProductController {
                 .body(productService.saveProduct(product));
     }
 
+    @PostMapping("delete/{id}")
+    public ResponseEntity deleteProduct(
+            @PathVariable String id
+    ){
+        logger.info("ProductControllerImpl.deleteProduct is executed");
+        logger.info("deleteProduct id = "+id);
+        if(productService.deleteProductById(id)){
+            logger.info("Product with id = %1 removed from the database", id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest ().build ();
+        }
+    }
+
 }
