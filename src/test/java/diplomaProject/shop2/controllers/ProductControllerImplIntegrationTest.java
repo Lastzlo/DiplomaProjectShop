@@ -1,5 +1,6 @@
 package diplomaProject.shop2.controllers;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import diplomaProject.shop2.dto.ProductDTO;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,9 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //аннотация указывает на новый файл с настройками
 @TestPropertySource("/application-test.properties")
 class ProductControllerImplIntegrationTest {
-
-    @Autowired
-    private ProductControllerImpl productController;
 
     @Autowired
     private MockMvc mockMvc;
@@ -79,5 +79,48 @@ class ProductControllerImplIntegrationTest {
 
         //then
         Assertions.assertEquals (expectedProduct,actualProduct);
+    }
+
+    @Test
+    @Sql(value = {"/forProductController/products-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/forProductController/products-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void products_whenStoredInDatabase3Item() throws Exception {
+        //given
+
+        //that productDTO should be contain in actualProductDTOS
+        final ProductDTO productDTO = new ProductDTO (){{
+            this.setId (10l);
+            //when transmitted as a string, the same value is assigned without rounding
+            //this.setPrice (new BigDecimal (700.50)); result = 700.5 it`s bad
+            this.setPrice (new BigDecimal ("700.50")); //result 700.50 it`s good
+            this.setProductDescription ("product_description 10");
+            this.setProductName ("product_name 10");
+        }};
+
+
+        //when
+        String resultJson = this.mockMvc.perform(MockMvcRequestBuilders.get ("/product/getAllProducts"))
+
+                //Print result
+                .andDo (print ())
+
+                //Validate the response code and content type
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+
+                .andReturn ()
+                .getResponse ()
+                .getContentAsString ();
+
+
+        final List<ProductDTO> actualProductDTOS = objectMapper.readValue(resultJson, new TypeReference<List<ProductDTO>> () { });
+
+        //then
+        Assertions.assertFalse (actualProductDTOS.isEmpty ());
+        Assertions.assertEquals (2,actualProductDTOS.size ());
+        Assertions.assertTrue (productDTO.equals (actualProductDTOS.get (1)), "productDTO should be equal to actualProductDTOS.get (1)");
+        Assertions.assertTrue (actualProductDTOS.contains (productDTO), "actualProductDTOS should be contains productDTO");
+
+
     }
 }
