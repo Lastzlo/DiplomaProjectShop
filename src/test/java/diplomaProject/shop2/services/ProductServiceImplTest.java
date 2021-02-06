@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 class ProductServiceImplTest {
@@ -96,4 +97,43 @@ class ProductServiceImplTest {
 
         Mockito.verify (productRepository, Mockito.times (1)).findAll ();
     }
+
+    @Test
+    void deleteProductById_whenProductFound(){
+        //give
+        final Product product = new Product (){{
+            this.setId (10l);
+            this.setPrice (new BigDecimal (1000));
+            this.setProductDescription ("ProductDescription");
+            this.setProductName ("ProductName");
+        }};
+
+        Mockito.when (productRepository.findById (product.getId ()))
+                .thenReturn (Optional.of (product));
+
+        //when
+        final String productId = "10";
+
+        final boolean result = productService.deleteProductById (productId);
+
+        //then
+        Assertions.assertTrue (result);
+    }
+
+    @Test
+    void deleteProductById_whenProductNotFound(){
+        //give
+
+        Mockito.when (productRepository.findById (ArgumentMatchers.anyLong ()))
+                .thenReturn (Optional.empty ());
+
+        //when
+        final String productId = "10";
+
+        final boolean result = productService.deleteProductById (productId);
+
+        //then
+        Assertions.assertFalse (result);
+    }
+
 }
