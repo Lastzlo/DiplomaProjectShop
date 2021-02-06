@@ -6,10 +6,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("product")
@@ -19,7 +18,12 @@ public class ProductControllerImpl implements ProductController {
     @Autowired
     private ProductService productService;
 
-
+    @GetMapping("products")
+    public ResponseEntity<List<ProductDTO>> products(){
+        logger.info("ProductControllerImpl.products is executed");
+        return ResponseEntity.ok()
+                .body(productService.getProducts());
+    }
 
     @PostMapping("add")
     public ResponseEntity<ProductDTO> addProduct(
