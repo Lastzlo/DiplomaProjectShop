@@ -1,6 +1,8 @@
 package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.ProductDTO;
+import diplomaProject.shop2.dto.product.ProductInputDTO;
+import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +30,7 @@ class ProductServiceImplTest {
     @Test
     void saveProduct_whenProductHaveProductNameAndProductDescriptionAndPrice () {
         //given
-        final ProductDTO product = new ProductDTO (){{
+        final ProductInputDTO productInputDTO = new ProductInputDTO (){{
             this.setPrice (new BigDecimal (1000));
             this.setProductDescription ("ProductDescription");
             this.setProductName ("ProductName");
@@ -46,11 +48,11 @@ class ProductServiceImplTest {
         ))
                 .thenReturn (productFromDB);
 
-        final ProductDTO expectedProductDTO =  Product.toDTO(productFromDB);
+        final ProductOutputDTO expectedProductDTO =  Product.toOutputDTO (productFromDB);
 
 
         //when
-        ProductDTO actualProductDTO = productService.saveProduct (product);
+        ProductOutputDTO actualProductDTO = productService.saveProduct (productInputDTO);
 
         //then
         Assertions.assertEquals (expectedProductDTO,actualProductDTO);

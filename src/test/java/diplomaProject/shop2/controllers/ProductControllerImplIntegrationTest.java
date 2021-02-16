@@ -3,6 +3,8 @@ package diplomaProject.shop2.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import diplomaProject.shop2.dto.ProductDTO;
+import diplomaProject.shop2.dto.product.ProductInputDTO;
+import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ class ProductControllerImplIntegrationTest {
     @Sql(value = {"/forProductController/create-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void addProduct_whenProductHaveProductNameAndProductDescriptionAndPrice () throws Exception {
         //given
-        final ProductDTO product = new ProductDTO (){{
+        final ProductInputDTO product = new ProductInputDTO (){{
             this.setPrice (new BigDecimal (1000));
             this.setProductDescription ("ProductDescription");
             this.setProductName ("ProductName");
@@ -67,9 +69,9 @@ class ProductControllerImplIntegrationTest {
                 .getResponse ()
                 .getContentAsString ();
 
-        final ProductDTO actualProduct = objectMapper.readValue(resultJson, ProductDTO.class);
+        final ProductOutputDTO actualProduct = objectMapper.readValue(resultJson, ProductOutputDTO.class);
 
-        final ProductDTO expectedProduct = new ProductDTO (){{
+        final ProductOutputDTO expectedProduct = new ProductOutputDTO (){{
             this.setId (10l);
             this.setPrice (new BigDecimal (1000));
             this.setProductDescription ("ProductDescription");
