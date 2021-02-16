@@ -55,7 +55,7 @@ class ProductControllerImplTest {
     @Test
     void products_whenStoredInDatabase3Item () {
         //give
-        final List<ProductDTO> productDTOS = new LinkedList<> (){{
+        final List<ProductDTO> productDTOS = new LinkedList<ProductDTO> (){{
             add (new ProductDTO (){{
                      this.setId (10l);
                      this.setPrice (new BigDecimal (1000));
