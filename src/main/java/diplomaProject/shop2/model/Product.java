@@ -1,6 +1,5 @@
 package diplomaProject.shop2.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import diplomaProject.shop2.dto.ProductDTO;
 
 import javax.persistence.Entity;
