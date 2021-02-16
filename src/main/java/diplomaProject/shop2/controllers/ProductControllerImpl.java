@@ -1,6 +1,8 @@
 package diplomaProject.shop2.controllers;
 
 import diplomaProject.shop2.dto.ProductDTO;
+import diplomaProject.shop2.dto.product.ProductInputDTO;
+import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.services.ProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,8 +28,8 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @PostMapping("add")
-    public ResponseEntity<ProductDTO> addProduct(
-            @RequestBody ProductDTO product
+    public ResponseEntity<ProductOutputDTO> addProduct(
+            @RequestBody ProductInputDTO product
     ){
         logger.info("ProductControllerImpl.addProduct is executed");
         return ResponseEntity.ok()

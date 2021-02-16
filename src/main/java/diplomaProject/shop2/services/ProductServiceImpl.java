@@ -1,6 +1,8 @@
 package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.ProductDTO;
+import diplomaProject.shop2.dto.product.ProductInputDTO;
+import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,12 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
 
     @Override
-    public ProductDTO saveProduct (ProductDTO product) {
-        final Product productFromDTO = ProductDTO.toProduct(product);
+    public ProductOutputDTO saveProduct (ProductInputDTO product) {
+        final Product productFromDTO = ProductInputDTO.toProduct(product);
 
         final Product productFromDB = productRepository.save (productFromDTO);
 
-        return Product.toDTO (productFromDB);
+        return Product.toOutputDTO (productFromDB);
     }
 
     @Override
