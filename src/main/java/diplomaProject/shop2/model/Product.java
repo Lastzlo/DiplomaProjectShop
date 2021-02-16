@@ -1,6 +1,7 @@
 package diplomaProject.shop2.model;
 
 import diplomaProject.shop2.dto.ProductDTO;
+import diplomaProject.shop2.dto.product.ProductOutputDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,6 +36,15 @@ public class Product {
 
     public static ProductDTO toDTO (Product productFromDB) {
         return new ProductDTO (
+                productFromDB.getId (),
+                productFromDB.getProductName (),
+                productFromDB.getProductDescription (),
+                productFromDB.getPrice ()
+        );
+    }
+
+    public static ProductOutputDTO toOutputDTO (Product productFromDB) {
+        return new ProductOutputDTO (
                 productFromDB.getId (),
                 productFromDB.getProductName (),
                 productFromDB.getProductDescription (),
