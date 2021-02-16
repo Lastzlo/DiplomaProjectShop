@@ -60,7 +60,7 @@ class ProductServiceImplTest {
     @Test
     void getProducts_whenStoredInDatabase3Item () {
         //give
-        final List<Product> productsFromDB = new LinkedList<> (){{
+        final List<Product> productsFromDB = new LinkedList<Product> (){{
             add (new Product (){{
                      this.setId (10l);
                      this.setPrice (new BigDecimal (1000));
