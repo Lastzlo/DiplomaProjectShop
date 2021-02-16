@@ -3,11 +3,9 @@ package diplomaProject.shop2.model;
 import diplomaProject.shop2.dto.ProductDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 public class Product {
@@ -24,6 +22,10 @@ public class Product {
 
     //цена товара
     private BigDecimal price;
+
+    //список фотографий
+    @OneToMany
+    private Set<Photo> photos;
 
     public Product(){}
 
@@ -82,5 +84,21 @@ public class Product {
 
     public void setPrice (BigDecimal price) {
         this.price = price;
+    }
+
+    public Set<Photo> getPhotos () {
+        return photos;
+    }
+
+    public void setPhotos (Set<Photo> photos) {
+        this.photos = photos;
+    }
+
+    public void addPhoto (Photo photo) {
+        this.photos.add (photo);
+    }
+
+    public void deletePhoto(Photo photo){
+        this.photos.remove (photo);
     }
 }
