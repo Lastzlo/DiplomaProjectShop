@@ -1,6 +1,5 @@
 package diplomaProject.shop2.controllers;
 
-import diplomaProject.shop2.dto.ProductDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.services.ProductService;
@@ -56,22 +55,22 @@ class ProductControllerImplTest {
     @Test
     void products_whenStoredInDatabase3Item () {
         //give
-        final List<ProductDTO> productDTOS = new LinkedList<ProductDTO> (){{
-            add (new ProductDTO (){{
+        final List<ProductOutputDTO> productDTOS = new LinkedList<ProductOutputDTO> (){{
+            add (new ProductOutputDTO (){{
                      this.setId (10l);
                      this.setPrice (new BigDecimal (1000));
                      this.setProductDescription ("ProductDescription");
                      this.setProductName ("ProductName");
                  }}
             );
-            add (new ProductDTO (){{
+            add (new ProductOutputDTO (){{
                      this.setId (10l);
                      this.setPrice (new BigDecimal (1000));
                      this.setProductDescription ("ProductDescription");
                      this.setProductName ("ProductName");
                  }}
             );
-            add (new ProductDTO (){{
+            add (new ProductOutputDTO (){{
                      this.setId (10l);
                      this.setPrice (new BigDecimal (1000));
                      this.setProductDescription ("ProductDescription");
@@ -85,7 +84,7 @@ class ProductControllerImplTest {
 
 
         //when
-        final ResponseEntity<List<ProductDTO>> actualProducts = productController.products ();
+        final ResponseEntity<List<ProductOutputDTO>> actualProducts = productController.products ();
 
 
         //then

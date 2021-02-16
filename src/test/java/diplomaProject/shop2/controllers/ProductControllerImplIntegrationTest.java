@@ -2,7 +2,6 @@ package diplomaProject.shop2.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import diplomaProject.shop2.dto.ProductDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import org.junit.jupiter.api.Assertions;
@@ -89,7 +88,7 @@ class ProductControllerImplIntegrationTest {
         //given
 
         //that productDTO should be contain in actualProductDTOS
-        final ProductDTO productDTO = new ProductDTO (){{
+        final ProductOutputDTO productDTO = new ProductOutputDTO (){{
             this.setId (10l);
             //when transmitted as a string, the same value is assigned without rounding
             //this.setPrice (new BigDecimal (700.50)); result = 700.5 it`s bad
@@ -114,7 +113,7 @@ class ProductControllerImplIntegrationTest {
                 .getContentAsString ();
 
 
-        final List<ProductDTO> actualProductDTOS = objectMapper.readValue(resultJson, new TypeReference<List<ProductDTO>> () { });
+        final List<ProductOutputDTO> actualProductDTOS = objectMapper.readValue(resultJson, new TypeReference<List<ProductOutputDTO>> () { });
 
         //then
         Assertions.assertFalse (actualProductDTOS.isEmpty ());

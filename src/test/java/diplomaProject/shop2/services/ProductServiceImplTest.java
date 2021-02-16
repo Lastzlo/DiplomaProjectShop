@@ -1,6 +1,5 @@
 package diplomaProject.shop2.services;
 
-import diplomaProject.shop2.dto.ProductDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.model.Product;
@@ -91,7 +90,7 @@ class ProductServiceImplTest {
 
 
         //when
-        final List<ProductDTO> actualProducts = productService.getProducts ();
+        final List<ProductOutputDTO> actualProducts = productService.getProducts ();
 
         //then
         Assertions.assertFalse (actualProducts.isEmpty ());
