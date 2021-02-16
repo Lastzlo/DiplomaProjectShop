@@ -1,4 +1,4 @@
-package diplomaProject.shop2.config;
+package diplomaProject.shop2.s3;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ApplicationConfig {
+public class AmazonS3Config {
 
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
