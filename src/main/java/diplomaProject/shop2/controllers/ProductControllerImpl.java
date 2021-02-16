@@ -1,6 +1,5 @@
 package diplomaProject.shop2.controllers;
 
-import diplomaProject.shop2.dto.ProductDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.services.ProductService;
@@ -21,7 +20,7 @@ public class ProductControllerImpl implements ProductController {
     private ProductService productService;
 
     @GetMapping("getAllProducts")
-    public ResponseEntity<List<ProductDTO>> products(){
+    public ResponseEntity<List<ProductOutputDTO>> products(){
         logger.info("ProductControllerImpl.products is executed");
         return ResponseEntity.ok()
                 .body(productService.getProducts());

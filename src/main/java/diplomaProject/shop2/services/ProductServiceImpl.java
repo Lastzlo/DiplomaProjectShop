@@ -1,6 +1,5 @@
 package diplomaProject.shop2.services;
 
-import diplomaProject.shop2.dto.ProductDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.model.Product;
@@ -27,11 +26,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getProducts () {
+    public List<ProductOutputDTO> getProducts () {
         final List<Product> products = productRepository.findAll ();
 
-        final List<ProductDTO> productDTOS = new LinkedList<ProductDTO> (){{
-            products.forEach (product -> add (Product.toDTO (product)));
+        final List<ProductOutputDTO> productDTOS = new LinkedList<ProductOutputDTO> (){{
+            products.forEach (product -> add (Product.toOutputDTO (product)));
         }};
 
         return productDTOS;
