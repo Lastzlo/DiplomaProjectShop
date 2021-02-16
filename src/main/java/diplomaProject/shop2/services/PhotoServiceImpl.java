@@ -1,5 +1,6 @@
 package diplomaProject.shop2.services;
 
+import com.amazonaws.services.s3.AmazonS3;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ public class PhotoServiceImpl implements PhotoService {
     @Autowired
     private PhotoRepository photoRepository;
 
+    @Autowired
+    private AmazonS3 amazonS3Client;
 
     @Override
     public Optional<Photo> savePhoto (MultipartFile multipartFile) {
