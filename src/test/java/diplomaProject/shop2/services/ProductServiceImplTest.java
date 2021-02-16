@@ -2,6 +2,7 @@ package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
+import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
 import org.junit.jupiter.api.Assertions;
@@ -9,19 +10,34 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
+@TestPropertySource("/application-test.properties")
 class ProductServiceImplTest {
+
+    @Value ("${testPicture.location}")
+    private String testPictureLocation;
 
     @Autowired
     private ProductService productService;
+
+    @MockBean
+    private PhotoService photoService;
 
     @MockBean
     private ProductRepository productRepository;
@@ -136,5 +152,45 @@ class ProductServiceImplTest {
         //then
         Assertions.assertFalse (result);
     }
+
+    @Test
+    void whenAddPhotoToProduct_thenTrue() throws IOException {
+        //give
+
+        //file
+        File file = new File (testPictureLocation);
+
+        //photo
+        Photo photo = new Photo (){{
+            this.setId (12l);
+            this.setSrc (file.getPath ());
+        }};
+        Mockito.when (photoService.savePhoto(ArgumentMatchers.any (MultipartFile.class)))
+                .thenReturn (Optional.of (photo));
+
+        //productFromDB
+        Product productFromDB = new Product (){{
+            this.setId (10l);
+            this.setPrice (new BigDecimal (1000));
+            this.setProductDescription ("ProductDescription");
+            this.setProductName ("ProductName");
+            this.setPhotos (new HashSet<> ());
+        }};
+        Mockito.when (productRepository.findById (ArgumentMatchers.anyLong ()))
+                .thenReturn (Optional.of (productFromDB));
+
+        //multipartFile
+        MultipartFile multipartFile = new MockMultipartFile (file.getName (), new FileInputStream (file));
+
+
+        //when
+        final boolean result = productService.addPhotoToProduct(multipartFile,productFromDB.getId ());
+
+
+        //then
+        Assertions.assertTrue (result);
+        Assertions.assertTrue (productFromDB.getPhotos().contains(photo));
+    }
+
 
 }
