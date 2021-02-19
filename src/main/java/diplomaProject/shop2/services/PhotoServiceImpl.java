@@ -21,9 +21,22 @@ public class PhotoServiceImpl implements PhotoService {
     @Autowired
     private AmazonS3Service amazonS3Service;
 
+    private final String ALLOWED_CONTENT_TYPE = "image/png";
+
+
     @Override
     public Optional<Photo> savePhoto (MultipartFile multipartFile) {
+        if(isAllowedContentType (multipartFile.getContentType ())){
+
+
+        } else {
+
+        }
         return Optional.empty ();
+    }
+
+    private boolean isAllowedContentType (String contentType){
+        return contentType.equals (ALLOWED_CONTENT_TYPE);
     }
 
 //    @Override
