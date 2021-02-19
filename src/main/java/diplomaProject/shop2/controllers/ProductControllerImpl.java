@@ -2,12 +2,14 @@ package diplomaProject.shop2.controllers;
 
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
+import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.services.ProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -47,6 +49,14 @@ public class ProductControllerImpl implements ProductController {
         } else {
             return ResponseEntity.badRequest ().build ();
         }
+    }
+
+    @PostMapping("addPhotoToProduct/{productId}")
+    public ResponseEntity<ResultDTO> addPhotoToProduct(
+            @RequestPart(value = "file") MultipartFile multipartFile,
+            @PathVariable Long productId
+    ){
+        return productService.addPhotoToProduct(multipartFile, productId);
     }
 
 }
