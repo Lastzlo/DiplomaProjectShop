@@ -1,8 +1,10 @@
 package diplomaProject.shop2.services;
 
-import com.amazonaws.services.s3.AmazonS3;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
+import diplomaProject.shop2.s3.AmazonS3Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,14 +13,48 @@ import java.util.Optional;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
+    private static final Logger logger = LogManager.getLogger(PhotoService.class);
+
     @Autowired
     private PhotoRepository photoRepository;
 
     @Autowired
-    private AmazonS3 amazonS3Client;
+    private AmazonS3Service amazonS3Service;
 
     @Override
     public Optional<Photo> savePhoto (MultipartFile multipartFile) {
         return Optional.empty ();
     }
+
+//    @Override
+//    public Optional<Photo> savePhoto (MultipartFile multipartFile) {
+//        Optional<File> optionalFile = FilesUtils.convertMultipartFileToFile (multipartFile);
+//
+//        if(optionalFile.isPresent ()){
+//            File file = optionalFile.get ();
+//
+//            final String newFileName = FilesUtils.generateFileName(file.getName ());
+//
+//            boolean resultOfSaveFile = amazonS3Service.saveFile(file, newFileName);
+//
+//            if(resultOfSaveFile){
+//                final String amazonS3FilePath = amazonS3Service
+//                        .getAbsolutPathByFileName(newFileName);
+//
+//                Photo photo = new Photo (){{ setSrc (amazonS3FilePath);}};
+//                photo = photoRepository.save (photo);
+//
+//                return Optional.of (photo);
+//            } else {
+//                logger.info ("resultOfSaveFile is "+resultOfSaveFile);
+//                return Optional.empty ();
+//            }
+//        } else {
+//            logger.info ("optionalFile is "+optionalFile);
+//            return Optional.empty ();
+//        }
+//    }
+
+
+
 }
