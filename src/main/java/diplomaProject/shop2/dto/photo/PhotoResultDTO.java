@@ -12,6 +12,10 @@ public class PhotoResultDTO {
     public PhotoResultDTO () {
     }
 
+    public PhotoResultDTO (String description) {
+        this.description = description;
+    }
+
     public PhotoResultDTO (String description, Optional<Photo> photo) {
         this.description = description;
         this.photo = photo;
