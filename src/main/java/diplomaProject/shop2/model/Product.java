@@ -4,6 +4,7 @@ import diplomaProject.shop2.dto.product.ProductOutputDTO;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,18 +14,17 @@ public class Product {
     private Long id;
 
     //название товара
-    private String productName;
+    private String productName = "";
 
     //описание товара
-    //стандарный String ограничен в 255 charts
-    private String productDescription;
+    private String productDescription = "";
 
     //цена товара
-    private BigDecimal price;
+    private BigDecimal price = BigDecimal.ZERO;
 
     //список фотографий
     @OneToMany
-    private Set<Photo> photos;
+    private Set<Photo> photos = new HashSet<> ();
 
     public Product(){}
 
