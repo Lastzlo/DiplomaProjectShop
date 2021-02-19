@@ -9,7 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Objects;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -38,16 +43,50 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PhotoResultDTO savePhoto (MultipartFile multipartFile) {
-        if(Objects.isNull (multipartFile.getContentType ())){
-            return new PhotoResultDTO ("multipartFile ContentType in null");
-        }else {
-            return new PhotoResultDTO ();
+        if (!isAllowedContentType (multipartFile.getContentType ())) {
+            return new PhotoResultDTO ("multipartFile is not AllowedContentType " +
+                    "because multipartFile.ContentType = "+multipartFile.getContentType ());
+        } else {
+            Optional<File> optionalFile = convertMultiPartToFile(multipartFile);
+
+            if (optionalFile.isPresent ()){
+                File file = optionalFile.get ();
+
+                String fileName = generateFileName(multipartFile.getOriginalFilename ());
+
+                //code checkpoint
+
+
+                return new PhotoResultDTO ();
+
+            } else {
+                return new PhotoResultDTO ("Error while converting MultiPart to File");
+            }
+        }
+    }
+
+    private Optional<File> convertMultiPartToFile(MultipartFile multipartFile){
+        File file = new File(multipartFile.getOriginalFilename ());
+
+        try (OutputStream os = new FileOutputStream (file)) {
+            os.write(multipartFile.getBytes());
+
+            return Optional.of (file);
+        } catch (IOException e) {
+            e.printStackTrace ();
+            return Optional.empty ();
         }
     }
 
     private boolean isAllowedContentType (String contentType){
         return contentType.equals (ALLOWED_CONTENT_TYPE);
     }
+
+    private String generateFileName (String fileName) {
+        return new Date ().getTime() + "-" + fileName.replace(" ", "_");
+    }
+
+
 
 //    @Override
 //    public Optional<Photo> savePhoto (MultipartFile multipartFile) {
