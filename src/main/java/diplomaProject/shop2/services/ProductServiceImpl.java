@@ -2,10 +2,11 @@ package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
-import diplomaProject.shop2.model.Photo;
+import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,24 +59,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean addPhotoToProduct (MultipartFile multipartFile, Long productId) {
-        final Optional<Product> productFromDB = productRepository.findById (productId);
-
-        if (productFromDB.isPresent ()){
-            Product product = productFromDB.get ();
-
-            final Optional<Photo> photoFromDB = photoService.savePhoto (multipartFile);
-            if(photoFromDB.isPresent ()){
-                final Photo photo = photoFromDB.get ();
-                product.addPhoto (photo);
-
-                productRepository.save (product);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+    public ResponseEntity<ResultDTO> addPhotoToProduct (MultipartFile multipartFile, Long id) {
+        return null;
     }
+
+//    @Override
+//    public boolean addPhotoToProduct (MultipartFile multipartFile, Long productId) {
+//        final Optional<Product> productFromDB = productRepository.findById (productId);
+//
+//        if (productFromDB.isPresent ()){
+//            Product product = productFromDB.get ();
+//
+//            final Optional<Photo> photoFromDB = photoService.savePhoto (multipartFile);
+//            if(photoFromDB.isPresent ()){
+//                final Photo photo = photoFromDB.get ();
+//                product.addPhoto (photo);
+//
+//                productRepository.save (product);
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        } else {
+//            return false;
+//        }
+//    }
 }

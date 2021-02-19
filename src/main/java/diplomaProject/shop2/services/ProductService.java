@@ -2,6 +2,8 @@ package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
+import diplomaProject.shop2.dto.results.ResultDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -13,5 +15,5 @@ public interface ProductService {
 
     boolean deleteProductById (String id);
 
-    boolean addPhotoToProduct (MultipartFile multipartFile, Long id);
+    ResponseEntity<ResultDTO> addPhotoToProduct (MultipartFile multipartFile, Long id);
 }
