@@ -1,11 +1,14 @@
 package diplomaProject.shop2.services;
 
+import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
+import diplomaProject.shop2.dto.results.BadRequestResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,7 +63,28 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<ResultDTO> addPhotoToProduct (MultipartFile multipartFile, Long id) {
-        return null;
+        final Optional<Product> optionalProduct = productRepository.findById (id);
+        if(optionalProduct.isPresent ()){
+            Product product = optionalProduct.get ();
+
+            PhotoResultDTO photoResultDTO = photoService.savePhoto (multipartFile);
+            if(photoResultDTO.getPhoto ().isPresent ()){
+                return null;
+
+            } else {
+                return new ResponseEntity<> (
+                        new BadRequestResult (photoResultDTO.getDescription ()),
+                        HttpStatus.BAD_REQUEST
+                );
+            }
+
+        } else {
+            return new ResponseEntity<> (
+                    new BadRequestResult (
+                    "Not found product with id = "+ id),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
     }
 
 //    @Override
