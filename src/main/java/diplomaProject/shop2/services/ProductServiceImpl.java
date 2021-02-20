@@ -68,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
             Product product = optionalProduct.get ();
 
             PhotoResultDTO photoResultDTO = photoService.savePhoto (multipartFile);
-            if(photoResultDTO.getPhoto ().isPresent ()){
+            if(photoResultDTO.isSuccessResult ()){
                 return null;
 
             } else {
