@@ -18,7 +18,10 @@ public class S3ServiceResultDTO {
         this.message = message;
         this.fileSrc = fileSrc;
     }
-    
+
+    public boolean isSuccessResult(){
+        return !fileSrc.isEmpty ();
+    }
 
     public String getMessage () {
         return message;
