@@ -21,6 +21,10 @@ public class PhotoResultDTO {
         this.photo = photo;
     }
 
+    public boolean isSuccessResult(){
+        return photo.isPresent ();
+    }
+
     public String getMessage () {
         return message;
     }
