@@ -1,20 +1,20 @@
 package diplomaProject.shop2.dto.results;
 
 public abstract class ResultDTO {
-    protected String description = "OK";
+    protected String message = "OK";
 
     public ResultDTO() {
     }
 
-    public ResultDTO(String description) {
-        this.description = description;
+    public ResultDTO(String message) {
+        this.message = message;
     }
 
-    public String getDescription() {
-        return description;
+    public String getMessage () {
+        return message;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -178,7 +178,7 @@ class ProductServiceImplTest {
 
         // Assert the response
         Assertions.assertEquals (HttpStatus.BAD_REQUEST, resultDTO.getStatusCode ());
-        Assertions.assertFalse (resultDTO.getBody ().getDescription ().isEmpty ());
+        Assertions.assertFalse (resultDTO.getBody ().getMessage ().isEmpty ());
     }
 
     @Test
@@ -208,7 +208,7 @@ class ProductServiceImplTest {
 
         // Assert the response
         Assertions.assertEquals (HttpStatus.BAD_REQUEST, resultDTO.getStatusCode ());
-        Assertions.assertFalse (resultDTO.getBody ().getDescription ().isEmpty ());
+        Assertions.assertFalse (resultDTO.getBody ().getMessage ().isEmpty ());
 
         verify (photoService, Mockito.times (1)).savePhoto (any (MultipartFile.class));
 
