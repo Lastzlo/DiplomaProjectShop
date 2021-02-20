@@ -1,6 +1,8 @@
 package diplomaProject.shop2.services;
 
+import diplomaProject.shop2.dto.amazonS3.S3ServiceResultDTO;
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
+import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
 import diplomaProject.shop2.s3.AmazonS3Service;
 import org.apache.logging.log4j.LogManager;
@@ -44,8 +46,10 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public PhotoResultDTO savePhoto (MultipartFile multipartFile) {
         if (!isAllowedContentType (multipartFile.getContentType ())) {
-            return new PhotoResultDTO ("multipartFile is not AllowedContentType " +
-                    "because multipartFile.ContentType = "+multipartFile.getContentType ());
+            final String message = "multipartFile is not AllowedContentType " +
+                    "because multipartFile.ContentType = "+multipartFile.getContentType ();
+            logger.info (message);
+            return new PhotoResultDTO (message);
         } else {
             Optional<File> optionalFile = convertMultiPartToFile(multipartFile);
 
@@ -54,13 +58,26 @@ public class PhotoServiceImpl implements PhotoService {
 
                 String fileName = generateFileName(multipartFile.getOriginalFilename ());
 
-                //code checkpoint
+                S3ServiceResultDTO s3ServiceResult = amazonS3Service.saveFile (file, fileName);
 
+                file.delete ();
 
-                return new PhotoResultDTO ();
+                if(s3ServiceResult.isSuccessResult ()){
+                    final String fileSrc = s3ServiceResult.getFileSrc ();
 
+                    final Photo photo = new Photo (fileSrc);
+                    final Photo photoFromDB = photoRepository.save (photo);
+
+                    final String message = "Save new photo to photoRepository complete";
+                    logger.info (message);
+                    return new PhotoResultDTO (message, Optional.of (photoFromDB));
+                } else {
+                    return new PhotoResultDTO (s3ServiceResult.getMessage ());
+                }
             } else {
-                return new PhotoResultDTO ("Error while converting MultiPart to File");
+                final String message = "Error while converting MultiPart to File";
+                logger.info (message);
+                return new PhotoResultDTO (message);
             }
         }
     }
