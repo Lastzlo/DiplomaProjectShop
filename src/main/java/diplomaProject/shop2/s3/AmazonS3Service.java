@@ -6,6 +6,4 @@ import java.io.File;
 
 public interface AmazonS3Service {
     S3ServiceResultDTO saveFile (File file, String fileName);
-
-    String getPathByFileName (String newFileName);
 }
