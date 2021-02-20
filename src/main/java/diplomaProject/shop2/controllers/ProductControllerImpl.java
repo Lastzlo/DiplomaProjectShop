@@ -35,6 +35,7 @@ public class ProductControllerImpl implements ProductController {
         logger.info("ProductControllerImpl.addProduct is executed");
         return ResponseEntity.ok()
                 .body(productService.saveProduct(product));
+        //сделать чтобы возвращалось сообщение с продуктом ProductResultDTO
     }
 
     @PostMapping("delete/{id}")
@@ -57,6 +58,7 @@ public class ProductControllerImpl implements ProductController {
             @PathVariable Long productId
     ){
         return productService.addPhotoToProduct(multipartFile, productId);
+        //сделать чтобы возвращалось сообщение с продуктом ProductResultDTO
     }
 
 }
