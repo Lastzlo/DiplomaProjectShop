@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
 
             } else {
                 return new ResponseEntity<> (
-                        new BadRequestResult (photoResultDTO.getDescription ()),
+                        new BadRequestResult (photoResultDTO.getMessage ()),
                         HttpStatus.BAD_REQUEST
                 );
             }

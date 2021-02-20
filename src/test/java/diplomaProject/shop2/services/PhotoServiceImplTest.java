@@ -51,7 +51,7 @@ class PhotoServiceImplTest {
         PhotoResultDTO resultDTO = photoService.savePhoto (multipartFile);
 
         // then
-        Assertions.assertFalse (resultDTO.getDescription ().isEmpty ());
+        Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
         Assertions.assertFalse (resultDTO.getPhoto ().isPresent ());
     }
 
@@ -68,7 +68,7 @@ class PhotoServiceImplTest {
         PhotoResultDTO resultDTO = photoService.savePhoto (multipartFile);
 
         // then
-        Assertions.assertFalse (resultDTO.getDescription ().isEmpty ());
+        Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
         Assertions.assertFalse (resultDTO.getPhoto ().isPresent ());
     }
 

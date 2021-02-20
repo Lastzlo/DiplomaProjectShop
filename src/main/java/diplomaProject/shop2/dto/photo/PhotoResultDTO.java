@@ -5,28 +5,28 @@ import diplomaProject.shop2.model.Photo;
 import java.util.Optional;
 
 public class PhotoResultDTO {
-    private String description = "Failed to save photo";
+    private String message = "Failed to save photo";
 
     private Optional<Photo> photo = Optional.empty ();
 
     public PhotoResultDTO () {
     }
 
-    public PhotoResultDTO (String description) {
-        this.description = description;
+    public PhotoResultDTO (String message) {
+        this.message = message;
     }
 
     public PhotoResultDTO (String description, Optional<Photo> photo) {
-        this.description = description;
+        this.message = description;
         this.photo = photo;
     }
 
-    public String getDescription () {
-        return description;
+    public String getMessage () {
+        return message;
     }
 
-    public void setDescription (String description) {
-        this.description = description;
+    public void setMessage (String message) {
+        this.message = message;
     }
 
     public Optional<Photo> getPhoto () {
