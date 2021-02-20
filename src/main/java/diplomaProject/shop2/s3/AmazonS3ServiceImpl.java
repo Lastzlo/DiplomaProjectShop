@@ -8,6 +8,8 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
 import diplomaProject.shop2.dto.amazonS3.S3ServiceResultDTO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ import java.util.concurrent.Executors;
 
 @Service
 public class AmazonS3ServiceImpl implements AmazonS3Service{
+
+    private static final Logger logger = LogManager.getLogger(AmazonS3Service.class);
 
     @Autowired
     AmazonS3 amazonS3Client;
@@ -30,13 +34,11 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
     @Override
     public S3ServiceResultDTO saveFile (File file, String fileName) {
 
-        int maxUploadThreads = 5;
-
         TransferManager tm = TransferManagerBuilder
                 .standard()
                 .withS3Client(amazonS3Client)
                 .withMultipartUploadThreshold((long) (5 * 1024 * 1024))
-                .withExecutorFactory(() -> Executors.newFixedThreadPool(maxUploadThreads))
+                .withExecutorFactory(() -> Executors.newFixedThreadPool(5))
                 .build();
 
         PutObjectRequest request =
@@ -49,14 +51,16 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
         try {
             upload.waitForCompletion();
 
-            String message = "Upload complete.";
+            String message = "Upload file complete";
             String fileSrc = getPathByFileName (fileName);
 
+            logger.info (message);
             return new S3ServiceResultDTO (message, fileSrc);
         } catch (AmazonClientException | InterruptedException e) {
             e.printStackTrace();
-
             String message = "Error occurred while uploading file";
+
+            logger.info (message);
             return new S3ServiceResultDTO (message);
         }
     }
