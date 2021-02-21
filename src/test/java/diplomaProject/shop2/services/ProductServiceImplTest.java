@@ -3,7 +3,8 @@ package diplomaProject.shop2.services;
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
-import diplomaProject.shop2.dto.results.ResultDTO;
+import diplomaProject.shop2.dto.product.ProductResultDTO;
+import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,31 +12,24 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @TestPropertySource("/application-test.properties")
 class ProductServiceImplTest {
-
-    @Value ("${testPicture.location}")
-    private String testPictureLocation;
 
     @Autowired
     private ProductService productService;
@@ -67,7 +61,7 @@ class ProductServiceImplTest {
         ))
                 .thenReturn (productFromDB);
 
-        final ProductOutputDTO expectedProductDTO =  Product.toOutputDTO (productFromDB);
+        final ProductOutputDTO expectedProductDTO =  ProductOutputDTO.fromProduct (productFromDB);
 
 
         //when
@@ -158,60 +152,96 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void addPhotoToProduct_whenProductNotFound_thenBadRequest(){
+    void addPhotoToProduct_whenProductNotFound(){
         // given
-        final Long productId = 10L;
+        Long productId = 10L;
         // and
-        final MockMultipartFile multipartFile = new MockMultipartFile (
-                "file",
-                "fileThatDoesNotExists.txt",
-                "text/plain",
-                "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
+        MultipartFile multipartFile = mock (MultipartFile.class);
 
         // Setup our mocked service
         doReturn (Optional.empty ())
                 .when (productRepository)
-                .findById (ArgumentMatchers.anyLong ());
+                .findById (productId);
 
         // Execute the service call
-        final ResponseEntity<ResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
+        ResponseEntity<ProductResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
 
         // Assert the response
         Assertions.assertEquals (HttpStatus.BAD_REQUEST, resultDTO.getStatusCode ());
-        Assertions.assertFalse (resultDTO.getBody ().getMessage ().isEmpty ());
+
+        Assertions.assertFalse (resultDTO.getBody ().isSuccess ());
+        Assertions.assertTrue (
+                resultDTO.getBody ()
+                        .getMessage ()
+                        .contains ("Not found product with id")
+        );
+
+        verify (productRepository).findById (productId);
     }
 
     @Test
-    void addPhotoToProduct_whenFailedToSavePhoto_thenBadRequest (){
+    void addPhotoToProduct_whenPhotoResultDTONotSuccess (){
         // given
-        final Long productId = 10L;
-        // and
-        final MockMultipartFile multipartFile = new MockMultipartFile (
-                "file",
-                "fileThatDoesNotExists.txt",
-                "text/plain",
-                "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
-        // and
-        final Product product = new Product ();
+        Long productId = 10L;
+        Product product = new Product ();
+        MultipartFile multipartFile = mock (MultipartFile.class);
+        PhotoResultDTO photoResultDTO = new PhotoResultDTO ();
+
         doReturn (Optional.of(product))
                 .when (productRepository)
-                .findById (ArgumentMatchers.anyLong ());
+                .findById (productId);
 
-        final PhotoResultDTO photoResultDTO = new PhotoResultDTO ();
         doReturn (photoResultDTO)
                 .when (photoService)
-                .savePhoto (any (MultipartFile.class));
+                .savePhoto (multipartFile);
 
+        // when
+        ResponseEntity<ProductResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
 
-        // Execute the service call
-        final ResponseEntity<ResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
-
-        // Assert the response
+        // then
         Assertions.assertEquals (HttpStatus.BAD_REQUEST, resultDTO.getStatusCode ());
         Assertions.assertFalse (resultDTO.getBody ().getMessage ().isEmpty ());
+        Assertions.assertFalse (resultDTO.getBody ().isSuccess ());
 
-        verify (photoService, Mockito.times (1)).savePhoto (any (MultipartFile.class));
+        verify (productRepository).findById (productId);
+        verify (photoService).savePhoto (multipartFile);
+    }
 
+    @Test
+    void addPhotoToProduct_thanCorrect (){
+        // given
+        Long productId = 10L;
+        Product product = new Product ();
+        MultipartFile multipartFile = mock (MultipartFile.class);
+        Photo photo = new Photo ();
+        PhotoResultDTO photoResultDTO = new PhotoResultDTO ("", Optional.of (photo));
+
+        doReturn (Optional.of(product))
+                .when (productRepository)
+                .findById (productId);
+
+        doReturn (photoResultDTO)
+                .when (photoService)
+                .savePhoto (multipartFile);
+
+        doReturn (product)
+                .when (productRepository)
+                .save (any (Product.class));
+
+        // when
+        ResponseEntity<ProductResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
+
+        // then
+        Assertions.assertEquals (HttpStatus.OK, resultDTO.getStatusCode ());
+        Assertions.assertTrue (
+                resultDTO.getBody ()
+                        .getMessage ()
+                        .equals ("Add photo to product complete")
+        );
+        Assertions.assertTrue (resultDTO.getBody ().isSuccess ());
+
+        verify (productRepository).findById (productId);
+        verify (photoService).savePhoto (multipartFile);
     }
 
 
