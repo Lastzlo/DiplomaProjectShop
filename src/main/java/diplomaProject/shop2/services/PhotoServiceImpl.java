@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -56,7 +57,7 @@ public class PhotoServiceImpl implements PhotoService {
                 File file = optionalFile.get ();
 
                 final String fileName = generateFileName(
-                        multipartFile.getOriginalFilename ()); //Objects.requireNonNull
+                        Objects.requireNonNull (multipartFile.getOriginalFilename ()));
 
                 final String savedFileSrc = amazonS3Service.saveFile (file, fileName);
 
@@ -77,7 +78,8 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     private Optional<File> convertMultiPartToFile(MultipartFile multipartFile){
-        File file = new File(multipartFile.getOriginalFilename ());
+        File file = new File(
+                Objects.requireNonNull (multipartFile.getOriginalFilename ()));
 
         try (OutputStream os = new FileOutputStream (file)) {
             os.write(multipartFile.getBytes());
