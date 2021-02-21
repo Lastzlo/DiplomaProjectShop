@@ -2,7 +2,7 @@ package diplomaProject.shop2.controllers;
 
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
-import diplomaProject.shop2.dto.results.SuccessResult;
+import diplomaProject.shop2.dto.product.ProductResultDTO;
 import diplomaProject.shop2.services.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,14 +19,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doReturn;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -141,37 +142,81 @@ class ProductControllerImplTest {
 
 
     @Test
-    void addPhotoToProduct_thenCorrect () throws Exception {
+    void addPhotoToProduct_thenOK () throws Exception {
         // given
-        final String urlTemplate = "/product/addPhotoToProduct/{productId}";
-        // and
-        final Long productId = 10L;
-        // and
-        final MockMultipartFile multipartFile = new MockMultipartFile (
-                "file",
-                "fileThatDoesNotExists.txt",
-                "text/plain",
-                "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
+        String urlTemplate = "/product/addPhotoToProduct/{productId}";
+        Long productId = 10L;
+        MockMultipartFile multipartFile = mock (MockMultipartFile.class);
+        when (multipartFile.getName ()).thenReturn ("file");
+        ProductOutputDTO productOutputDTO = new ProductOutputDTO ();
+
+        String message = "message";
 
         // Setup our mocked service
-        doReturn (new ResponseEntity<> (new SuccessResult (), HttpStatus.OK))
-                .when (productService)
-                .addPhotoToProduct (
-                        ArgumentMatchers.any (MultipartFile.class), ArgumentMatchers.anyLong ()
-                );
-
+        when (productService.addPhotoToProduct (
+                ArgumentMatchers.any (MultipartFile.class),
+                ArgumentMatchers.eq (productId)
+        )).thenReturn (
+                new ResponseEntity<> (
+                        new ProductResultDTO (message, Optional.of (productOutputDTO)),
+                        HttpStatus.OK
+                )
+        );
 
         // Execute the POST request
         mockMvc.perform (
-                multipart(urlTemplate,productId)
-                .file (multipartFile))
+                multipart (urlTemplate, productId)
+                        .file (multipartFile))
+                // Print
+                .andDo (print ())
 
                 // Validate the response code and content type
-                .andExpect (status().isOk ())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect (status ().isOk ())
+                .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
 
                 // Validate the returned fields
-                .andExpect(jsonPath("$.description", is("OK")));
+                .andExpect (jsonPath ("$.message", is ("message")))
+                .andExpect (jsonPath ("$.product.id", is (nullValue ())))
+                .andExpect (jsonPath ("$.product.productName", is (nullValue ())))
+                .andExpect (jsonPath ("$.product.photos", hasSize (0)))
+                .andExpect (jsonPath ("$.success", is (true)));
+    }
 
+    @Test
+    void addPhotoToProduct_thenBadRequest () throws Exception {
+        // given
+        String urlTemplate = "/product/addPhotoToProduct/{productId}";
+        Long productId = 10L;
+        MockMultipartFile multipartFile = mock (MockMultipartFile.class);
+        when (multipartFile.getName ()).thenReturn ("file");
+
+        String message = "message";
+
+        // Setup our mocked service
+        when (productService.addPhotoToProduct (
+                ArgumentMatchers.any (MultipartFile.class),
+                ArgumentMatchers.eq (productId)
+        )).thenReturn (
+                new ResponseEntity<> (
+                        new ProductResultDTO (message),
+                        HttpStatus.BAD_REQUEST
+                )
+        );
+
+        // Execute the POST request
+        mockMvc.perform (
+                multipart (urlTemplate, productId)
+                        .file (multipartFile))
+                // Print
+                .andDo (print ())
+
+                // Validate the response code and content type
+                .andExpect (status ().isBadRequest ())
+                .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
+
+                // Validate the returned fields
+                .andExpect (jsonPath ("$.message", is ("message")))
+                .andExpect (jsonPath ("$.product", is (nullValue ())))
+                .andExpect (jsonPath ("$.success", is (false)));
     }
 }
