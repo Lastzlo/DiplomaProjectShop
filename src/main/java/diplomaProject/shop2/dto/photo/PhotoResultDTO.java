@@ -21,7 +21,7 @@ public class PhotoResultDTO {
         this.photo = photo;
     }
 
-    public boolean isSuccessResult(){
+    public boolean isSuccess (){
         return photo.isPresent ();
     }
 
