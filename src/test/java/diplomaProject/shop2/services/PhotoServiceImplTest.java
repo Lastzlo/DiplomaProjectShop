@@ -1,6 +1,5 @@
 package diplomaProject.shop2.services;
 
-import diplomaProject.shop2.dto.amazonS3.S3ServiceResultDTO;
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
@@ -70,33 +69,34 @@ class PhotoServiceImplTest {
 //        Assertions.assertFalse (resultDTO.getPhoto ().isPresent ());
 //    }
 
+//    @Test
+//    void savePhoto_whenS3ServiceResultNotSuccess_thenPhotoResultDto() {
+//        // given
+//        final MockMultipartFile multipartFile = new MockMultipartFile (
+//                "file",
+//                "file",
+//                "image/png",
+//                "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
+//
+//        when (amazonS3Service.saveFile (any(File.class), any(String.class)))
+//                .thenReturn (new S3ServiceResultDTO ());
+//        //тут /thenThrow и ошибку)
+//
+//
+//        // when
+//        PhotoResultDTO resultDTO = photoService.savePhoto (multipartFile);
+//
+//        // then
+//        Assertions.assertFalse (resultDTO.isSuccessResult ());
+//        Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
+//        Assertions.assertFalse (resultDTO.getPhoto ().isPresent ());
+//
+//        verify (amazonS3Service)
+//                .saveFile (any(File.class), any(String.class));
+//    }
+
     @Test
-    void savePhoto_whenS3ServiceResultNotSuccess_thenPhotoResultDto() {
-        // given
-        final MockMultipartFile multipartFile = new MockMultipartFile (
-                "file",
-                "file",
-                "image/png",
-                "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
-
-        when (amazonS3Service.saveFile (any(File.class), any(String.class)))
-                .thenReturn (new S3ServiceResultDTO ());
-
-
-        // when
-        PhotoResultDTO resultDTO = photoService.savePhoto (multipartFile);
-
-        // then
-        Assertions.assertFalse (resultDTO.isSuccessResult ());
-        Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
-        Assertions.assertFalse (resultDTO.getPhoto ().isPresent ());
-
-        verify (amazonS3Service)
-                .saveFile (any(File.class), any(String.class));
-    }
-
-    @Test
-    void savePhoto_whenS3ServiceResultSuccess_thenPhotoResultDto() {
+    void savePhoto_thenPhotoResultDto() {
         // given
         String fileSrc = "fileSrc";
 
@@ -107,7 +107,7 @@ class PhotoServiceImplTest {
                 "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
 
         when (amazonS3Service.saveFile (any(File.class), any(String.class)))
-                .thenReturn (new S3ServiceResultDTO ("OK", "fileSrc"));
+                .thenReturn (fileSrc);
         when (photoRepository.save (any (Photo.class))).thenReturn (new Photo ());
 
         // when

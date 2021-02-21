@@ -1,6 +1,5 @@
 package diplomaProject.shop2.services;
 
-import diplomaProject.shop2.dto.amazonS3.S3ServiceResultDTO;
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
@@ -56,24 +55,19 @@ public class PhotoServiceImpl implements PhotoService {
             if (optionalFile.isPresent ()){
                 File file = optionalFile.get ();
 
-                String fileName = generateFileName(multipartFile.getOriginalFilename ());
+                final String fileName = generateFileName(
+                        multipartFile.getOriginalFilename ()); //Objects.requireNonNull
 
-                S3ServiceResultDTO s3ServiceResult = amazonS3Service.saveFile (file, fileName);
+                final String savedFileSrc = amazonS3Service.saveFile (file, fileName);
 
                 file.delete ();
 
-                if(s3ServiceResult.isSuccessResult ()){
-                    final String fileSrc = s3ServiceResult.getFileSrc ();
+                final Photo photo = new Photo (savedFileSrc);
+                final Photo photoFromDB = photoRepository.save (photo);
 
-                    final Photo photo = new Photo (fileSrc);
-                    final Photo photoFromDB = photoRepository.save (photo);
-
-                    final String message = "Save new photo to photoRepository complete";
-                    logger.info (message);
-                    return new PhotoResultDTO (message, Optional.of (photoFromDB));
-                } else {
-                    return new PhotoResultDTO (s3ServiceResult.getMessage ());
-                }
+                final String message = "Save new photo to photoRepository complete";
+                logger.info (message);
+                return new PhotoResultDTO (message, Optional.of (photoFromDB));
             } else {
                 final String message = "Error while converting MultiPart to File";
                 logger.info (message);
