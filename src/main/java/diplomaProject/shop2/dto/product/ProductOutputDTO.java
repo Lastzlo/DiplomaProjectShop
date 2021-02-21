@@ -1,9 +1,12 @@
 package diplomaProject.shop2.dto.product;
 
+import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.model.Product;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class ProductOutputDTO {
     private Long id;
@@ -18,21 +21,26 @@ public class ProductOutputDTO {
     //цена товара
     private BigDecimal price;
 
+    //список фото
+    private Set<Photo> photos = new HashSet<> ();
+
     public ProductOutputDTO (){}
 
-    public ProductOutputDTO (Long id, String productName, String productDescription, BigDecimal price) {
+    public ProductOutputDTO (Long id, String productName, String productDescription, BigDecimal price, Set<Photo> photos) {
         this.id = id;
         this.productName = productName;
         this.productDescription = productDescription;
         this.price = price;
+        this.photos = photos;
     }
 
-    public static Product toProduct (ProductOutputDTO product) {
-        return new Product (
+    public static ProductOutputDTO fromProduct (Product product) {
+        return new ProductOutputDTO (
                 product.getId (),
                 product.getProductName (),
                 product.getProductDescription (),
-                product.getPrice ()
+                product.getPrice (),
+                product.getPhotos ()
         );
     }
 

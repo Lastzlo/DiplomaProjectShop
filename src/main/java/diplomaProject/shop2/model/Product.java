@@ -1,7 +1,5 @@
 package diplomaProject.shop2.model;
 
-import diplomaProject.shop2.dto.product.ProductOutputDTO;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -33,15 +31,6 @@ public class Product {
         this.productName = productName;
         this.productDescription = productDescription;
         this.price = price;
-    }
-
-    public static ProductOutputDTO toOutputDTO (Product productFromDB) {
-        return new ProductOutputDTO (
-                productFromDB.getId (),
-                productFromDB.getProductName (),
-                productFromDB.getProductDescription (),
-                productFromDB.getPrice ()
-        );
     }
 
     public Long getId () {

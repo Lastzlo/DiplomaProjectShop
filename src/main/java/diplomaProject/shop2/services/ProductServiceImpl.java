@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
         final Product productFromDB = productRepository.save (productFromDTO);
 
-        return Product.toOutputDTO (productFromDB);
+        return ProductOutputDTO.fromProduct (productFromDB);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
         final List<Product> products = productRepository.findAll ();
 
         final List<ProductOutputDTO> productDTOS = new LinkedList<ProductOutputDTO> (){{
-            products.forEach (product -> add (Product.toOutputDTO (product)));
+            products.forEach (product -> add (ProductOutputDTO.fromProduct (product)));
         }};
 
         return productDTOS;
