@@ -19,7 +19,7 @@ public class S3ServiceResultDTO {
         this.fileSrc = fileSrc;
     }
 
-    public boolean isSuccessResult(){
+    public boolean isSuccess (){
         return !fileSrc.isEmpty ();
     }
 
