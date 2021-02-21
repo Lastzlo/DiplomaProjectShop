@@ -5,7 +5,6 @@ import diplomaProject.shop2.model.Product;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class ProductOutputDTO {
@@ -76,20 +75,36 @@ public class ProductOutputDTO {
         this.price = price;
     }
 
+    public Set<Photo> getPhotos () {
+        return photos;
+    }
+
+    public void setPhotos (Set<Photo> photos) {
+        this.photos = photos;
+    }
 
     @Override
     public boolean equals (Object o) {
         if (this == o) return true;
         if (o == null) return false;
+
         ProductOutputDTO that = (ProductOutputDTO) o;
-        return Objects.equals (id, that.id) &&
-                Objects.equals (productName, that.productName) &&
-                Objects.equals (productDescription, that.productDescription) &&
-                Objects.equals (price, that.price);
+
+        if (id != null ? !id.equals (that.id) : that.id != null) return false;
+        if (productName != null ? !productName.equals (that.productName) : that.productName != null) return false;
+        if (productDescription != null ? !productDescription.equals (that.productDescription) : that.productDescription != null)
+            return false;
+        if (price != null ? !price.equals (that.price) : that.price != null) return false;
+        return photos != null ? photos.equals (that.photos) : that.photos == null;
     }
 
     @Override
     public int hashCode () {
-        return Objects.hash (id, productName, productDescription, price);
+        int result = id != null ? id.hashCode () : 0;
+        result = 31 * result + (productName != null ? productName.hashCode () : 0);
+        result = 31 * result + (productDescription != null ? productDescription.hashCode () : 0);
+        result = 31 * result + (price != null ? price.hashCode () : 0);
+        result = 31 * result + (photos != null ? photos.hashCode () : 0);
+        return result;
     }
 }
