@@ -2,7 +2,7 @@ package diplomaProject.shop2.controllers;
 
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
-import diplomaProject.shop2.dto.results.ResultDTO;
+import diplomaProject.shop2.dto.product.ProductResultDTO;
 import diplomaProject.shop2.services.ProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,12 +53,11 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @PostMapping("addPhotoToProduct/{productId}")
-    public ResponseEntity<ResultDTO> addPhotoToProduct(
+    public ResponseEntity<ProductResultDTO> addPhotoToProduct(
             @RequestPart(value = "file") MultipartFile multipartFile,
             @PathVariable Long productId
     ){
         return productService.addPhotoToProduct(multipartFile, productId);
-        //сделать чтобы возвращалось сообщение с продуктом ProductResultDTO
     }
 
 }
