@@ -4,6 +4,8 @@ import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.dto.product.ProductResultDTO;
+import diplomaProject.shop2.dto.results.BadResult;
+import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
@@ -13,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -65,8 +65,26 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductResultDTO deleteProductById (Long productId) {
-        return null;
+    public ResultDTO deleteProductById (Long productId) {
+        final Optional<Product> optionalProduct = productRepository.findById (productId);
+        if(optionalProduct.isPresent ()) {
+            Product product = optionalProduct.get ();
+
+            // copy product photos
+            Set<Photo> photos = new HashSet<> (product.getPhotos ());
+
+            productRepository.delete (product);
+            logger.info ("product with id = "+productId+"was removed from the repository");
+
+            photoService.deletePhotos(photos);
+
+            return null;
+        } else {
+            final String message = "Not found product with id = "+ productId;
+
+            logger.info (message);
+            return new BadResult (message);
+        }
     }
 
     @Override
@@ -99,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResultDTO deletePhotoFromProduct (Long photoId, Long productId) {
+    public ResultDTO deletePhotoFromProduct (Long photoId, Long productId) {
         return null;
     }
 

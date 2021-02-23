@@ -3,7 +3,7 @@ package diplomaProject.shop2.controllers;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.dto.product.ProductResultDTO;
-import diplomaProject.shop2.dto.results.BadRequestResult;
+import diplomaProject.shop2.dto.results.BadResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.dto.results.SuccessResult;
 import diplomaProject.shop2.services.ProductService;
@@ -61,16 +61,16 @@ public class ProductControllerImpl implements ProductController {
         logger.info("ProductControllerImpl.deleteProduct is executed");
         logger.info("deleteProduct id = "+productId);
 
-        ProductResultDTO productResultDTO = productService.deleteProductById (productId);
+        ResultDTO result = productService.deleteProductById (productId);
 
-        if(productResultDTO.isSuccess ()){
+        if(result.isSuccess ()){
             return new ResponseEntity<>(
-                    new SuccessResult (productResultDTO.getMessage ()),
+                    new SuccessResult (result.getMessage ()),
                     HttpStatus.OK
             );
         } else {
             return new ResponseEntity<>(
-                    new BadRequestResult (productResultDTO.getMessage ()),
+                    new BadResult (result.getMessage ()),
                     HttpStatus.BAD_REQUEST
             );
         }
@@ -101,16 +101,16 @@ public class ProductControllerImpl implements ProductController {
             @RequestParam (value = "photoId") Long photoId,
             @RequestParam (value = "productId") Long productId
     ){
-        ProductResultDTO productResultDTO = productService.deletePhotoFromProduct (photoId, productId);
+        ResultDTO result = productService.deletePhotoFromProduct (photoId, productId);
 
-        if(productResultDTO.isSuccess ()){
+        if(result.isSuccess ()){
             return new ResponseEntity<>(
-                    new SuccessResult (productResultDTO.getMessage ()),
+                    new SuccessResult (result.getMessage ()),
                     HttpStatus.OK
             );
         } else {
             return new ResponseEntity<>(
-                    new BadRequestResult (productResultDTO.getMessage ()),
+                    new BadResult (result.getMessage ()),
                     HttpStatus.BAD_REQUEST
             );
         }

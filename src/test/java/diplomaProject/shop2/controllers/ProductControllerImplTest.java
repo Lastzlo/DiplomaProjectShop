@@ -3,6 +3,9 @@ package diplomaProject.shop2.controllers;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.dto.product.ProductResultDTO;
+import diplomaProject.shop2.dto.results.BadResult;
+import diplomaProject.shop2.dto.results.ResultDTO;
+import diplomaProject.shop2.dto.results.SuccessResult;
 import diplomaProject.shop2.services.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -146,15 +149,11 @@ class ProductControllerImplTest {
         // given
         String urlTemplate = "/product/delete/{productId}";
         Long productId = 10L;
-        ProductOutputDTO productOutputDTO = new ProductOutputDTO ();
-        String message = "message";
 
         // Setup our mocked service
         when (productService.deleteProductById (
                 ArgumentMatchers.eq (productId)
-        )).thenReturn (
-                new ProductResultDTO (message, Optional.of (productOutputDTO))
-        );
+        )).thenReturn (new SuccessResult ());
 
         // Execute the POST request
         mockMvc.perform (
@@ -167,7 +166,7 @@ class ProductControllerImplTest {
                 .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
 
                 // Validate the returned fields
-                .andExpect (jsonPath ("$.message", is ("message")));
+                .andExpect (jsonPath ("$.message", is ("OK")));
     }
 
     @Test
@@ -181,7 +180,7 @@ class ProductControllerImplTest {
         when (productService.deleteProductById (
                 ArgumentMatchers.eq (productId)
         )).thenReturn (
-                new ProductResultDTO (message)
+                new BadResult (message)
         );
 
         // Execute the POST request
@@ -278,15 +277,13 @@ class ProductControllerImplTest {
         String productId = "5";
         String photoId = "10";
 
-        ProductOutputDTO productDTO = mock (ProductOutputDTO.class);
-        ProductResultDTO productResultDTO = new ProductResultDTO ("Some test", Optional.of (productDTO));
-
+        SuccessResult successResult = new SuccessResult ();
 
         // Setup our mocked service
         when (productService.deletePhotoFromProduct (
                 ArgumentMatchers.eq (Long.valueOf (photoId)),
                 ArgumentMatchers.eq (Long.valueOf (productId))
-        )).thenReturn (productResultDTO);
+        )).thenReturn (successResult);
 
         // Execute the POST request
         mockMvc.perform (
@@ -302,7 +299,7 @@ class ProductControllerImplTest {
                 .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
 
                 // Validate the returned fields
-                .andExpect (jsonPath ("$.message", is ("Some test")));
+                .andExpect (jsonPath ("$.message", is ("OK")));
     }
 
     @Test
@@ -312,13 +309,14 @@ class ProductControllerImplTest {
         String productId = "5";
         String photoId = "10";
 
-        ProductResultDTO productResultDTO = new ProductResultDTO ("what's the problem");
+        ResultDTO badResult = new BadResult (
+                "Problem with delete photo from AWS");
 
         // Setup our mocked service
         when (productService.deletePhotoFromProduct (
                 ArgumentMatchers.eq (Long.valueOf (photoId)),
                 ArgumentMatchers.eq (Long.valueOf (productId))
-        )).thenReturn (productResultDTO);
+        )).thenReturn (badResult);
 
         // Execute the POST request
         mockMvc.perform (
@@ -334,7 +332,7 @@ class ProductControllerImplTest {
                 .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
 
                 // Validate the returned fields
-                .andExpect (jsonPath ("$.message", is ("what's the problem")));
+                .andExpect (jsonPath ("$.message", is ("Problem with delete photo from AWS")));
     }
 
 }

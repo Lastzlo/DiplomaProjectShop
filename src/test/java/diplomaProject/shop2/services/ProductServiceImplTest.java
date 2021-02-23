@@ -4,6 +4,7 @@ import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.dto.product.ProductResultDTO;
+import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
@@ -150,7 +151,30 @@ class ProductServiceImplTest {
 //    }
 
     @Test
-    void addPhotoToProduct_whenProductNotFound(){
+    void deleteProductById_whenProductNotFound (){
+        // given
+        Long productId = 10L;
+        // and
+        MultipartFile multipartFile = mock (MultipartFile.class);
+
+        // Setup our mocked service
+        doReturn (Optional.empty ())
+                .when (productRepository)
+                .findById (productId);
+
+        // Execute the service call
+        ResultDTO resultDTO = productService.deleteProductById (productId);
+
+        // Assert the response
+        Assertions.assertTrue (
+                resultDTO.getMessage ().contains ("Not found product with id")
+        );
+
+        verify (productRepository).findById (productId);
+    }
+
+    @Test
+    void addPhotoToProduct_whenProductNotFound (){
         // given
         Long productId = 10L;
         // and

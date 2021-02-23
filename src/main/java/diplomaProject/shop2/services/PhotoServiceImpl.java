@@ -1,6 +1,7 @@
 package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
+import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
 import diplomaProject.shop2.s3.AmazonS3Service;
@@ -17,6 +18,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -99,7 +101,10 @@ public class PhotoServiceImpl implements PhotoService {
         return new Date ().getTime() + "-" + fileName.replace(" ", "_");
     }
 
-
+    @Override
+    public ResultDTO deletePhotos (Set<Photo> photos) {
+        return null;
+    }
 
 //    @Override
 //    public Optional<Photo> savePhoto (MultipartFile multipartFile) {
