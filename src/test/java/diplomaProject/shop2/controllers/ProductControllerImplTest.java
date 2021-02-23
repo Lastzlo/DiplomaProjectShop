@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -219,4 +220,71 @@ class ProductControllerImplTest {
                 .andExpect (jsonPath ("$.product", is (nullValue ())))
                 .andExpect (jsonPath ("$.success", is (false)));
     }
+
+    @Test
+    void deletePhotoFromProduct_thenOK () throws Exception {
+        // given
+        String urlTemplate = "/product/deletePhotoToProduct";
+        String productId = "5";
+        String photoId = "10";
+
+        ProductOutputDTO productDTO = mock (ProductOutputDTO.class);
+        ProductResultDTO productResultDTO = new ProductResultDTO ("Some test", Optional.of (productDTO));
+
+
+        // Setup our mocked service
+        when (productService.deletePhotoFromProduct (
+                ArgumentMatchers.eq (Long.valueOf (photoId)),
+                ArgumentMatchers.eq (Long.valueOf (productId))
+        )).thenReturn (productResultDTO);
+
+        // Execute the POST request
+        mockMvc.perform (
+                post (urlTemplate)
+                        .param ("photoId", photoId)
+                        .param ("productId", productId))
+
+                // Print
+                .andDo (print ())
+
+                // Validate the response code and content type
+                .andExpect (status ().isOk ())
+                .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
+
+                // Validate the returned fields
+                .andExpect (jsonPath ("$.message", is ("Some test")));
+    }
+
+    @Test
+    void deletePhotoFromProduct_thenBadRequest () throws Exception {
+        // given
+        String urlTemplate = "/product/deletePhotoToProduct";
+        String productId = "5";
+        String photoId = "10";
+
+        ProductResultDTO productResultDTO = new ProductResultDTO ("what's the problem");
+
+        // Setup our mocked service
+        when (productService.deletePhotoFromProduct (
+                ArgumentMatchers.eq (Long.valueOf (photoId)),
+                ArgumentMatchers.eq (Long.valueOf (productId))
+        )).thenReturn (productResultDTO);
+
+        // Execute the POST request
+        mockMvc.perform (
+                post (urlTemplate)
+                        .param ("photoId", photoId)
+                        .param ("productId", productId))
+
+                // Print
+                .andDo (print ())
+
+                // Validate the response code and content type
+                .andExpect (status ().isBadRequest ())
+                .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
+
+                // Validate the returned fields
+                .andExpect (jsonPath ("$.message", is ("what's the problem")));
+    }
+
 }
