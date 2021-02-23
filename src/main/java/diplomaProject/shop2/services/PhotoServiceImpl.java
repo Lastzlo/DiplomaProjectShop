@@ -1,6 +1,7 @@
 package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
+import diplomaProject.shop2.dto.results.BadResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
@@ -136,5 +137,17 @@ public class PhotoServiceImpl implements PhotoService {
 //    }
 
 
+    @Override
+    public ResultDTO deletePhotoById (Long photoId) {
+        Optional<Photo> optionalPhoto = photoRepository.findById (photoId);
 
+        if(optionalPhoto.isPresent ()){
+            return null;
+        } else {
+            final String message = "Not found photo with id = "+ photoId;
+
+            logger.info (message);
+            return new BadResult (message);
+        }
+    }
 }

@@ -11,4 +11,6 @@ public interface PhotoService {
     PhotoResultDTO savePhoto (MultipartFile multipartFile);
 
     ResultDTO deletePhotos (Set<Photo> photos);
+
+    ResultDTO deletePhotoById (Long photoId);
 }

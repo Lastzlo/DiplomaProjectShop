@@ -118,8 +118,34 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResultDTO deletePhotoFromProduct (Long photoId, Long productId) {
-        return null;
+        final Optional<Product> optionalProduct = productRepository.findById (productId);
+        if(optionalProduct.isPresent ()) {
+            Product product = optionalProduct.get ();
+
+            if(product.hasPhotoByIdInPhotos(photoId)){
+                product.deletePhotoById (photoId);
+                productRepository.save (product);
+
+                ResultDTO result = photoService.deletePhotoById (photoId);
+
+                return null;
+
+            } else {
+                final String message = "Not found photo with id = "+ photoId+
+                        " in product with id = "+ productId;
+
+                logger.info (message);
+                return new BadResult (message);
+            }
+        } else {
+            final String message = "Not found product with id = "+ productId;
+
+            logger.info (message);
+            return new BadResult (message);
+        }
     }
+
+
 
 //    @Override
 //    public boolean addPhotoToProduct (MultipartFile multipartFile, Long productId) {

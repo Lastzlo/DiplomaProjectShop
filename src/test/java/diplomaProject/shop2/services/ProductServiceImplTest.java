@@ -257,6 +257,50 @@ class ProductServiceImplTest {
         verify (photoService).savePhoto (multipartFile);
     }
 
+    @Test
+    void deletePhotoFromProduct_whenProductNotFound(){
+        // given
+        Long photoId = 15L;
+        Long productId = 10L;
+
+        // Setup our mocked service
+        doReturn (Optional.empty ())
+                .when (productRepository)
+                .findById (productId);
+
+        // Execute the service call
+        ResultDTO resultDTO = productService.deletePhotoFromProduct (photoId, productId);
+
+        // Assert the response
+        Assertions.assertTrue (
+                resultDTO.getMessage ().contains ("Not found product with id")
+        );
+
+        verify (productRepository).findById (productId);
+    }
+
+    @Test
+    void deletePhotoFromProduct_whenHasPhotoByIdInPhotosReturnFalse(){
+        // given
+        Long photoId = 15L;
+        Long productId = 10L;
+        Product product = new Product ();
+
+        // Setup our mocked service
+        doReturn (Optional.of (product))
+                .when (productRepository)
+                .findById (productId);
+
+        // Execute the service call
+        ResultDTO resultDTO = productService.deletePhotoFromProduct (photoId, productId);
+
+        // Assert the response
+        Assertions.assertTrue (
+                resultDTO.getMessage ().contains ("Not found photo with id")
+        );
+
+        verify (productRepository).findById (productId);
+    }
 
 //    @Test
 //    void whenAddPhotoToProduct_thenTrue() throws IOException {
