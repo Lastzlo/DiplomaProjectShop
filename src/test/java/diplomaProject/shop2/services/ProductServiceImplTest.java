@@ -156,13 +156,10 @@ class ProductServiceImplTest {
     void deleteProductById_whenProductNotFound (){
         // given
         Long productId = 10L;
-        // and
-        MultipartFile multipartFile = mock (MultipartFile.class);
 
         // Setup our mocked service
-        doReturn (Optional.empty ())
-                .when (productRepository)
-                .findById (productId);
+        when (productRepository.findById (productId))
+                .thenReturn (Optional.empty ());
 
         // Execute the service call
         ResultDTO resultDTO = productService.deleteProductById (productId);
@@ -173,6 +170,62 @@ class ProductServiceImplTest {
         );
 
         verify (productRepository).findById (productId);
+    }
+
+    @Test
+    void deleteProductById_whenPhotoServiceResultNotSuccess (){
+        // given
+        Long productId = 10L;
+
+        Product product = new Product ();
+
+        // Setup our mocked service
+        when (productRepository.findById (productId))
+                .thenReturn (Optional.of (product));
+
+        when (photoService.deletePhotos (ArgumentMatchers.anySet ()))
+                .thenReturn (new BadResult ("sorry"));
+
+        // Execute the service call
+        ResultDTO resultDTO = productService.deleteProductById (productId);
+
+        // Assert the response
+        Assertions.assertTrue (
+                resultDTO.getMessage ().contains ("sorry")
+        );
+        Assertions.assertFalse (resultDTO.isSuccess ());
+
+        verify (productRepository).findById (productId);
+        verify (productRepository).delete (product);
+        verify (photoService).deletePhotos (ArgumentMatchers.anySet ());
+    }
+
+    @Test
+    void deleteProductById_thenSuccessResult (){
+        // given
+        Long productId = 10L;
+
+        Product product = new Product ();
+
+        // Setup our mocked service
+        when (productRepository.findById (productId))
+                .thenReturn (Optional.of (product));
+
+        when (photoService.deletePhotos (ArgumentMatchers.anySet ()))
+                .thenReturn (new SuccessResult ());
+
+        // Execute the service call
+        ResultDTO resultDTO = productService.deleteProductById (productId);
+
+        // Assert the response
+        Assertions.assertTrue (
+                resultDTO.getMessage ().contains ("delete product complete")
+        );
+        Assertions.assertTrue (resultDTO.isSuccess ());
+
+        verify (productRepository).findById (productId);
+        verify (productRepository).delete (product);
+        verify (photoService).deletePhotos (ArgumentMatchers.anySet ());
     }
 
     @Test

@@ -75,11 +75,17 @@ public class ProductServiceImpl implements ProductService {
             Set<Photo> photos = new HashSet<> (product.getPhotos ());
 
             productRepository.delete (product);
-            logger.info ("product with id = "+productId+"was removed from the repository");
+            logger.info ("product with id = "+productId+" was removed from the repository");
 
-            photoService.deletePhotos(photos);
+            ResultDTO photoServiceResult = photoService.deletePhotos(photos);
 
-            return null;
+            if(photoServiceResult.isSuccess ()){
+                final String message = "delete product complete";
+                logger.info (message);
+                return new SuccessResult (message);
+            } else {
+                return new BadResult (photoServiceResult.getMessage ());
+            }
         } else {
             final String message = "Not found product with id = "+ productId;
 
