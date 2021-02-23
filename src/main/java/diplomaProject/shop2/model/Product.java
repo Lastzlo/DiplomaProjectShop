@@ -91,4 +91,8 @@ public class Product {
 
         return false;
     }
+
+    public void deletePhotoById (Long photoId) {
+        photos.removeIf (photo -> photo.getId ().equals (photoId));
+    }
 }
