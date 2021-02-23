@@ -1,11 +1,13 @@
 package diplomaProject.shop2.services;
 
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
+import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
 import diplomaProject.shop2.s3.AmazonS3Service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -131,7 +134,54 @@ class PhotoServiceImplTest {
 
     }
 
+    @Test
+    void deletePhotoById_whenPhotoNotFoundById () {
+        // given
+        Long photoId = 15L;
 
+        // Setup our mocked service
+        when (photoRepository.findById (ArgumentMatchers.eq (photoId)))
+                .thenReturn (Optional.empty ());
+
+        // when
+        ResultDTO result = photoService.deletePhotoById (photoId);
+
+
+        // than
+        Assertions.assertTrue (
+                result.getMessage ().contains ("Not found photo with id")
+        );
+        Assertions.assertFalse (result.isSuccess ());
+
+        verify (photoRepository).findById (photoId);
+    }
+
+    @Test
+    void deletePhotoById_whenSuccessResult () {
+        // given
+        Long photoId = 15L;
+        Photo photo = new Photo ("src");
+
+        // Setup our mocked service
+        when (photoRepository.findById (ArgumentMatchers.eq (photoId)))
+                .thenReturn (Optional.of (photo));
+
+        // when
+        ResultDTO result = photoService.deletePhotoById (photoId);
+
+
+        // than
+        Assertions.assertTrue (
+                result.getMessage ().contains ("success removed")
+        );
+        Assertions.assertTrue (result.isSuccess ());
+
+        verify (photoRepository).findById (photoId);
+        verify (amazonS3Service).deleteFileByFileUrl (photo.getSrc ());
+        verify (photoRepository).deleteById (photoId);
+    }
+
+    
 
 //    @BeforeEach
 //    public void setup() {

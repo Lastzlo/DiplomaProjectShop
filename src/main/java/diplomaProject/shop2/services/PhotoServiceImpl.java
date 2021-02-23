@@ -3,6 +3,7 @@ package diplomaProject.shop2.services;
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.results.BadResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
+import diplomaProject.shop2.dto.results.SuccessResult;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
 import diplomaProject.shop2.s3.AmazonS3Service;
@@ -142,7 +143,16 @@ public class PhotoServiceImpl implements PhotoService {
         Optional<Photo> optionalPhoto = photoRepository.findById (photoId);
 
         if(optionalPhoto.isPresent ()){
-            return null;
+            Photo photo = optionalPhoto.get ();
+
+            amazonS3Service.deleteFileByFileUrl (photo.getSrc ());
+
+            photoRepository.deleteById (photoId);
+
+            final String message = "Photo with id = "+ photoId + " success removed";
+
+            logger.info (message);
+            return new SuccessResult (message);
         } else {
             final String message = "Not found photo with id = "+ photoId;
 
