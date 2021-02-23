@@ -106,6 +106,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @Override
+    public ProductResultDTO deletePhotoFromProduct (Long photoId, Long productId) {
+        return null;
+    }
+
 //    @Override
 //    public boolean addPhotoToProduct (MultipartFile multipartFile, Long productId) {
 //        final Optional<Product> productFromDB = productRepository.findById (productId);

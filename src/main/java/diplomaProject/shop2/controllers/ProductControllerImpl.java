@@ -3,10 +3,14 @@ package diplomaProject.shop2.controllers;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.dto.product.ProductResultDTO;
+import diplomaProject.shop2.dto.results.BadRequestResult;
+import diplomaProject.shop2.dto.results.ResultDTO;
+import diplomaProject.shop2.dto.results.SuccessResult;
 import diplomaProject.shop2.services.ProductService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,6 +62,27 @@ public class ProductControllerImpl implements ProductController {
             @PathVariable Long productId
     ){
         return productService.addPhotoToProduct(multipartFile, productId);
+    }
+
+    @PostMapping("deletePhotoToProduct")
+    public ResponseEntity<ResultDTO> deletePhotoFromProduct(
+            @RequestParam (value = "photoId") Long photoId,
+            @RequestParam (value = "productId") Long productId
+    ){
+        ProductResultDTO productResultDTO = productService.deletePhotoFromProduct (photoId, productId);
+
+        if(productResultDTO.isSuccess ()){
+            return new ResponseEntity<>(
+                    new SuccessResult (productResultDTO.getMessage ()),
+                    HttpStatus.OK
+            );
+        } else {
+            return new ResponseEntity<>(
+                    new BadRequestResult (productResultDTO.getMessage ()),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
     }
 
 }

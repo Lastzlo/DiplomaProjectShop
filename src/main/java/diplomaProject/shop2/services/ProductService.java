@@ -16,4 +16,6 @@ public interface ProductService {
     boolean deleteProductById (String id);
 
     ResponseEntity<ProductResultDTO> addPhotoToProduct (MultipartFile multipartFile, Long id);
+
+    ProductResultDTO deletePhotoFromProduct (Long photoId, Long productId);
 }
