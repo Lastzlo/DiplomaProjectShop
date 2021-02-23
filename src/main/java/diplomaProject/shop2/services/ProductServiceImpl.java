@@ -10,8 +10,6 @@ import diplomaProject.shop2.repos.ProductRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,13 +64,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<ProductResultDTO> addPhotoToProduct (MultipartFile multipartFile, Long id) {
+    public ProductResultDTO addPhotoToProduct (MultipartFile multipartFile, Long id) {
         final Optional<Product> optionalProduct = productRepository.findById (id);
-        if(optionalProduct.isPresent ()){
+        if(optionalProduct.isPresent ()) {
             Product product = optionalProduct.get ();
 
             PhotoResultDTO photoResultDTO = photoService.savePhoto (multipartFile);
-            if(photoResultDTO.isSuccess ()){
+            if(photoResultDTO.isSuccess ()) {
                 final Optional<Photo> photo = photoResultDTO.getPhoto ();
 
                 product.addPhoto (photo.get ());
@@ -82,27 +80,15 @@ public class ProductServiceImpl implements ProductService {
 
                 final String message = "Add photo to product complete";
                 logger.info (message);
-                return new ResponseEntity<> (
-                        new ProductResultDTO (
-                                message,
-                                Optional.of (productDTO)
-                        ),
-                        HttpStatus.OK
-                );
+                return new ProductResultDTO (message, Optional.of (productDTO));
             } else {
-                return new ResponseEntity<> (
-                        new ProductResultDTO (photoResultDTO.getMessage ()),
-                        HttpStatus.BAD_REQUEST
-                );
+                return new ProductResultDTO (photoResultDTO.getMessage ());
             }
         } else {
             final String message = "Not found product with id = "+ id;
 
             logger.info (message);
-            return new ResponseEntity<> (
-                    new ProductResultDTO (message),
-                    HttpStatus.BAD_REQUEST
-            );
+            return new ProductResultDTO (message);
         }
     }
 

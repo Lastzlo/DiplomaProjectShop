@@ -61,7 +61,19 @@ public class ProductControllerImpl implements ProductController {
             @RequestPart(value = "file") MultipartFile multipartFile,
             @PathVariable Long productId
     ){
-        return productService.addPhotoToProduct(multipartFile, productId);
+        ProductResultDTO productResultDTO = productService.addPhotoToProduct(multipartFile, productId);
+
+        if(productResultDTO.isSuccess ()){
+            return new ResponseEntity<>(
+                    productResultDTO,
+                    HttpStatus.OK
+            );
+        } else {
+            return new ResponseEntity<>(
+                    productResultDTO,
+                    HttpStatus.BAD_REQUEST
+            );
+        }
     }
 
     @PostMapping("deletePhotoToProduct")

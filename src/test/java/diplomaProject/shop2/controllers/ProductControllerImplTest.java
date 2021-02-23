@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
@@ -158,10 +157,7 @@ class ProductControllerImplTest {
                 ArgumentMatchers.any (MultipartFile.class),
                 ArgumentMatchers.eq (productId)
         )).thenReturn (
-                new ResponseEntity<> (
-                        new ProductResultDTO (message, Optional.of (productOutputDTO)),
-                        HttpStatus.OK
-                )
+                new ProductResultDTO (message, Optional.of (productOutputDTO))
         );
 
         // Execute the POST request
@@ -198,10 +194,7 @@ class ProductControllerImplTest {
                 ArgumentMatchers.any (MultipartFile.class),
                 ArgumentMatchers.eq (productId)
         )).thenReturn (
-                new ResponseEntity<> (
-                        new ProductResultDTO (message),
-                        HttpStatus.BAD_REQUEST
-                )
+                new ProductResultDTO (message)
         );
 
         // Execute the POST request

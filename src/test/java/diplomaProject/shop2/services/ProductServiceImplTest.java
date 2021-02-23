@@ -14,8 +14,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -164,16 +162,11 @@ class ProductServiceImplTest {
                 .findById (productId);
 
         // Execute the service call
-        ResponseEntity<ProductResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
+        ProductResultDTO resultDTO = productService.addPhotoToProduct (multipartFile, productId);
 
         // Assert the response
-        Assertions.assertEquals (HttpStatus.BAD_REQUEST, resultDTO.getStatusCode ());
-
-        Assertions.assertFalse (resultDTO.getBody ().isSuccess ());
         Assertions.assertTrue (
-                resultDTO.getBody ()
-                        .getMessage ()
-                        .contains ("Not found product with id")
+                resultDTO.getMessage ().contains ("Not found product with id")
         );
 
         verify (productRepository).findById (productId);
@@ -196,12 +189,11 @@ class ProductServiceImplTest {
                 .savePhoto (multipartFile);
 
         // when
-        ResponseEntity<ProductResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
+        ProductResultDTO resultDTO = productService.addPhotoToProduct (multipartFile, productId);
 
         // then
-        Assertions.assertEquals (HttpStatus.BAD_REQUEST, resultDTO.getStatusCode ());
-        Assertions.assertFalse (resultDTO.getBody ().getMessage ().isEmpty ());
-        Assertions.assertFalse (resultDTO.getBody ().isSuccess ());
+        Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
+        Assertions.assertFalse (resultDTO.isSuccess ());
 
         verify (productRepository).findById (productId);
         verify (photoService).savePhoto (multipartFile);
@@ -229,16 +221,13 @@ class ProductServiceImplTest {
                 .save (any (Product.class));
 
         // when
-        ResponseEntity<ProductResultDTO> resultDTO = productService.addPhotoToProduct (multipartFile, productId);
+        ProductResultDTO resultDTO = productService.addPhotoToProduct (multipartFile, productId);
 
         // then
-        Assertions.assertEquals (HttpStatus.OK, resultDTO.getStatusCode ());
         Assertions.assertTrue (
-                resultDTO.getBody ()
-                        .getMessage ()
-                        .equals ("Add photo to product complete")
+                resultDTO.getMessage ().equals ("Add photo to product complete")
         );
-        Assertions.assertTrue (resultDTO.getBody ().isSuccess ());
+        Assertions.assertTrue (resultDTO.isSuccess ());
 
         verify (productRepository).findById (productId);
         verify (photoService).savePhoto (multipartFile);
