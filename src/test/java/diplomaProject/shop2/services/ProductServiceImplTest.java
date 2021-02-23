@@ -4,7 +4,9 @@ import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.product.ProductInputDTO;
 import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.dto.product.ProductResultDTO;
+import diplomaProject.shop2.dto.results.BadResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
+import diplomaProject.shop2.dto.results.SuccessResult;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
@@ -301,6 +303,71 @@ class ProductServiceImplTest {
 
         verify (productRepository).findById (productId);
     }
+
+    @Test
+    void deletePhotoFromProduct_whenPhotoServiceResultNotSuccess(){
+        // given
+        Long photoId = 15L;
+        Long productId = 10L;
+        Product product = mock (Product.class);
+
+        // Setup our mocked service
+        when (productRepository.findById (productId))
+                .thenReturn (Optional.of (product));
+
+        when (product.hasPhotoByIdInPhotos (photoId))
+                .thenReturn (true);
+
+        when (photoService.deletePhotoById (photoId))
+                .thenReturn (new BadResult ("Sorry"));
+
+
+        // Execute the service call
+        ResultDTO resultDTO = productService.deletePhotoFromProduct (photoId, productId);
+
+        // Assert the response
+        Assertions.assertTrue (
+                resultDTO.getMessage ().contains ("Sorry")
+        );
+        Assertions.assertFalse (resultDTO.isSuccess ());
+
+        verify (productRepository).findById (productId);
+        verify (productRepository).save (product);
+        verify (photoService).deletePhotoById (photoId);
+    }
+
+    @Test
+    void deletePhotoFromProduct_thenSuccessResult(){
+        // given
+        Long photoId = 15L;
+        Long productId = 10L;
+        Product product = mock (Product.class);
+
+        // Setup our mocked service
+        when (productRepository.findById (productId))
+                .thenReturn (Optional.of (product));
+
+        when (product.hasPhotoByIdInPhotos (photoId))
+                .thenReturn (true);
+
+        when (photoService.deletePhotoById (photoId))
+                .thenReturn (new SuccessResult ());
+
+
+        // Execute the service call
+        ResultDTO resultDTO = productService.deletePhotoFromProduct (photoId, productId);
+
+        // Assert the response
+        Assertions.assertTrue (
+                resultDTO.getMessage ().contains ("delete photo from product complete")
+        );
+        Assertions.assertTrue (resultDTO.isSuccess ());
+
+        verify (productRepository).findById (productId);
+        verify (productRepository).save (product);
+        verify (photoService).deletePhotoById (photoId);
+    }
+
 
 //    @Test
 //    void whenAddPhotoToProduct_thenTrue() throws IOException {

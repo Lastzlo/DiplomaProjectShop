@@ -6,6 +6,7 @@ import diplomaProject.shop2.dto.product.ProductOutputDTO;
 import diplomaProject.shop2.dto.product.ProductResultDTO;
 import diplomaProject.shop2.dto.results.BadResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
+import diplomaProject.shop2.dto.results.SuccessResult;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.model.Product;
 import diplomaProject.shop2.repos.ProductRepository;
@@ -126,10 +127,15 @@ public class ProductServiceImpl implements ProductService {
                 product.deletePhotoById (photoId);
                 productRepository.save (product);
 
-                ResultDTO result = photoService.deletePhotoById (photoId);
+                ResultDTO photoServiceResult = photoService.deletePhotoById (photoId);
 
-                return null;
-
+                if(photoServiceResult.isSuccess ()){
+                    final String message = "delete photo from product complete";
+                    logger.info (message);
+                    return new SuccessResult (message);
+                } else {
+                    return new BadResult (photoServiceResult.getMessage ());
+                }
             } else {
                 final String message = "Not found photo with id = "+ photoId+
                         " in product with id = "+ productId;
