@@ -1,20 +1,27 @@
 package diplomaProject.shop2.dto.results;
 
 public abstract class ResultDTO {
-    protected String message = "OK";
+    private String message = "OK";
+
+    private boolean isSuccessResult = true;
 
     public ResultDTO() {
+    }
+
+    public boolean isSuccess () {
+        return isSuccessResult;
     }
 
     public ResultDTO(String message) {
         this.message = message;
     }
 
-    public String getMessage () {
-        return message;
+    public ResultDTO (String message, boolean isSuccessResult) {
+        this.message = message;
+        this.isSuccessResult = isSuccessResult;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getMessage () {
+        return message;
     }
 }

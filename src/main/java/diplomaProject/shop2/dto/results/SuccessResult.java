@@ -1,11 +1,12 @@
 package diplomaProject.shop2.dto.results;
 
 public class SuccessResult extends ResultDTO {
+
     public SuccessResult () {
-        super ("OK");
+        super ();
     }
 
-    public SuccessResult (String description) {
-        super (description);
+    public SuccessResult (String message) {
+        super (message);
     }
 }
