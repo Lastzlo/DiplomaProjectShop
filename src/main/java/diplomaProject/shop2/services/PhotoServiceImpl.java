@@ -103,19 +103,26 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public ResultDTO deletePhotos (Set<Photo> photos) {
 
-        Set<String> photoUrls = new HashSet<> ();
-        for (Photo photo: photos) {
-            photoUrls.add (photo.getSrc ());
+        if(!photos.isEmpty ()){
+            Set<String> photoUrls = new HashSet<> ();
+            for (Photo photo: photos) {
+                photoUrls.add (photo.getSrc ());
+            }
+
+            amazonS3Service.deleteFilesByFileUrls (photoUrls.toArray (new String[0]));
+
+            photoRepository.deleteAll (photos);
+
+            final String message = "Photos success removed";
+
+            logger.info (message);
+            return new SuccessResult (message);
+        } else {
+            final String message = "Photos is Empty";
+
+            logger.info (message);
+            return new SuccessResult (message);
         }
-
-        amazonS3Service.deleteFilesByFileUrls (photoUrls.toArray (new String[0]));
-
-        photoRepository.deleteAll (photos);
-
-        final String message = "Photos success removed";
-
-        logger.info (message);
-        return new SuccessResult (message);
     }
 
 //    @Override

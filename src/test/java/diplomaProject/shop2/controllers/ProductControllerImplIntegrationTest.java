@@ -124,37 +124,37 @@ class ProductControllerImplIntegrationTest {
 
     }
 
-//    @Test
-//    @Sql(value = {"/forProductController/deleteProduct-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//    @Sql(value = {"/forProductController/deleteProduct-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-//    void deleteProduct_whenProductWasRemoved() throws Exception {
-//        //given
-//        final String productId = "10";
-//
-//        //when
-//        this.mockMvc.perform(MockMvcRequestBuilders.post ("/product/delete/"+productId))
-//
-//                //Print result
-//                .andDo (print ())
-//
-//                //Validate the response code and content type
-//                .andExpect(status().isOk());
-//    }
-//
-//    @Test
-//    @Sql(value = {"/forProductController/deleteProduct-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//    @Sql(value = {"/forProductController/deleteProduct-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-//    void deleteProduct_whenProductWasNotRemoved() throws Exception {
-//        //given
-//        final String productId = "1000";
-//
-//        //when
-//        this.mockMvc.perform(MockMvcRequestBuilders.post ("/product/delete/"+productId))
-//
-//                //Print result
-//                .andDo (print ())
-//
-//                //Validate the response code and content type
-//                .andExpect(status().is4xxClientError ());
-//    }
+    @Test
+    @Sql(value = {"/forProductController/deleteProduct-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/forProductController/deleteProduct-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void deleteProduct_whenProductWasRemoved() throws Exception {
+        //given
+        final String productId = "10";
+
+        //when
+        this.mockMvc.perform(MockMvcRequestBuilders.post ("/product/delete/"+productId))
+
+                //Print result
+                .andDo (print ())
+
+                //Validate the response code and content type
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Sql(value = {"/forProductController/deleteProduct-product-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/forProductController/deleteProduct-product-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void deleteProduct_whenProductWasNotRemoved() throws Exception {
+        //given
+        final String productId = "1000";
+
+        //when
+        this.mockMvc.perform(MockMvcRequestBuilders.post ("/product/delete/"+productId))
+
+                //Print result
+                .andDo (print ())
+
+                //Validate the response code and content type
+                .andExpect(status().is4xxClientError ());
+    }
 }
