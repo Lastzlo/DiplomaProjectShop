@@ -45,4 +45,24 @@ class ProductTest {
         //then
         Assertions.assertFalse (result);
     }
+
+    @Test
+    void deletePhotoById () {
+        // given
+        Long photoId = 10L;
+
+        Product product = new Product (){{
+            addPhoto (
+                    new Photo (){{
+                        setId (photoId);
+                    }}
+            );
+        }};
+
+        //when
+        product.deletePhotoById (photoId);
+
+        //then
+        Assertions.assertTrue (product.getPhotos ().isEmpty ());
+    }
 }
