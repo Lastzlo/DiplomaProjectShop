@@ -8,6 +8,7 @@ import diplomaProject.shop2.s3.AmazonS3Service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -184,7 +185,7 @@ class PhotoServiceImplTest {
     }
 
     @Test
-    void deletePhotos_thenSuccessResult () {
+    void deletePhotos_whenPhotosIsEmpty_thenSuccessResult () {
         // given
         Set<Photo> photos = new HashSet<> ();
 
@@ -193,10 +194,26 @@ class PhotoServiceImplTest {
 
         //then
         Assertions.assertTrue (resultDTO.isSuccess ());
+        Assertions.assertEquals ("Photos is Empty", resultDTO.getMessage ());
+    }
+
+    @Test
+    void deletePhotos_whenPhotosNotEmpty_thenSuccessResult () {
+        // given
+        Set<Photo> photos = new HashSet<Photo> (){{
+            add(new Photo ("src1"));
+            add(new Photo ("src2"));
+        }};
+
+        // when
+        ResultDTO resultDTO = photoService.deletePhotos (photos);
+
+        //then
+        Assertions.assertTrue (resultDTO.isSuccess ());
         Assertions.assertEquals ("Photos success removed", resultDTO.getMessage ());
 
-        verify (amazonS3Service).deleteFilesByFileUrls (ArgumentMatchers.eq (new String[0]));
-        verify (photoRepository).deleteAll (photos);
+        verify (amazonS3Service, Mockito.times (1)).deleteFilesByFileUrls (ArgumentMatchers.eq (new String[]{"src1", "src2"}));
+        verify (photoRepository, Mockito.times (1)).deleteAll (photos);
     }
 
 
