@@ -80,4 +80,15 @@ public class Product {
     public void deletePhoto(Photo photo){
         this.photos.remove (photo);
     }
+
+    public boolean hasPhotoByIdInPhotos (Long photoId) {
+
+        for (Photo photo : photos) {
+            if (photo.getId ().equals (photoId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
