@@ -17,10 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
@@ -105,7 +102,20 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ResultDTO deletePhotos (Set<Photo> photos) {
-        return null;
+
+        Set<String> photoUrls = new HashSet<> ();
+        for (Photo photo: photos) {
+            photoUrls.add (photo.getSrc ());
+        }
+
+        amazonS3Service.deleteFilesByFileUrls (photoUrls.toArray (new String[0]));
+
+        photoRepository.deleteAll (photos);
+
+        final String message = "Photos success removed";
+
+        logger.info (message);
+        return new SuccessResult (message);
     }
 
 //    @Override

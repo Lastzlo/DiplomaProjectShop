@@ -17,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -170,7 +172,7 @@ class PhotoServiceImplTest {
         ResultDTO result = photoService.deletePhotoById (photoId);
 
 
-        // than
+        // then
         Assertions.assertTrue (
                 result.getMessage ().contains ("success removed")
         );
@@ -181,7 +183,22 @@ class PhotoServiceImplTest {
         verify (photoRepository).deleteById (photoId);
     }
 
-    
+    @Test
+    void deletePhotos_thenSuccessResult () {
+        // given
+        Set<Photo> photos = new HashSet<> ();
+
+        // when
+        ResultDTO resultDTO = photoService.deletePhotos (photos);
+
+        //then
+        Assertions.assertTrue (resultDTO.isSuccess ());
+        Assertions.assertEquals ("Photos success removed", resultDTO.getMessage ());
+
+        verify (amazonS3Service).deleteFilesByFileUrls (ArgumentMatchers.eq (new String[0]));
+        verify (photoRepository).deleteAll (photos);
+    }
+
 
 //    @BeforeEach
 //    public void setup() {
