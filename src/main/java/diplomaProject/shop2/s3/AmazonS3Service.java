@@ -4,4 +4,6 @@ import java.io.File;
 
 public interface AmazonS3Service {
     String saveFile (File file, String fileName);
+
+    void deleteFileByFileUrl (String fileUrl);
 }
