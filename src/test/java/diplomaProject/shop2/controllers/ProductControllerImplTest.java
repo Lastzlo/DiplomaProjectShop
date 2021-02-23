@@ -110,36 +110,93 @@ class ProductControllerImplTest {
         Assertions.assertEquals (productDTOS, actualProducts.getBody ());
     }
 
+//    @Test
+//    void deleteProduct_whenProductWasRemoved(){
+//        //given
+//        final String productId = "10";
+//
+//        when (productService.deleteProductById (productId))
+//                .thenReturn (true);
+//
+//        //when
+//        final ResponseEntity responseEntity = productController.deleteProduct (productId);
+//
+//        //then
+//        Assertions.assertTrue (responseEntity.getStatusCode ().is2xxSuccessful ());
+//    }
+
+//    @Test
+//    void deleteProduct_whenProductWasNotRemoved(){
+//        //given
+//        final String productId = "10";
+//
+//        when (productService.deleteProductById (productId))
+//                .thenReturn (false);
+//
+//        //when
+//        final ResponseEntity responseEntity = productController.deleteProduct (productId);
+//
+//        //then
+//        Assertions.assertTrue (responseEntity.getStatusCode ().is4xxClientError ());
+//    }
+
+
     @Test
-    void deleteProduct_whenProductWasRemoved(){
-        //given
-        final String productId = "10";
+    void deleteProduct_thenOK () throws Exception {
+        // given
+        String urlTemplate = "/product/delete/{productId}";
+        Long productId = 10L;
+        ProductOutputDTO productOutputDTO = new ProductOutputDTO ();
+        String message = "message";
 
-        when (productService.deleteProductById (productId))
-                .thenReturn (true);
+        // Setup our mocked service
+        when (productService.deleteProductById (
+                ArgumentMatchers.eq (productId)
+        )).thenReturn (
+                new ProductResultDTO (message, Optional.of (productOutputDTO))
+        );
 
-        //when
-        final ResponseEntity responseEntity = productController.deleteProduct (productId);
+        // Execute the POST request
+        mockMvc.perform (
+                post (urlTemplate, productId))
+                // Print
+                .andDo (print ())
 
-        //then
-        Assertions.assertTrue (responseEntity.getStatusCode ().is2xxSuccessful ());
+                // Validate the response code and content type
+                .andExpect (status ().isOk ())
+                .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
+
+                // Validate the returned fields
+                .andExpect (jsonPath ("$.message", is ("message")));
     }
 
     @Test
-    void deleteProduct_whenProductWasNotRemoved(){
-        //given
-        final String productId = "10";
+    void deleteProduct_thenBadRequest () throws Exception {
+        // given
+        String urlTemplate = "/product/delete/{productId}";
+        Long productId = 10L;
+        String message = "what's the problem";
 
-        when (productService.deleteProductById (productId))
-                .thenReturn (false);
+        // Setup our mocked service
+        when (productService.deleteProductById (
+                ArgumentMatchers.eq (productId)
+        )).thenReturn (
+                new ProductResultDTO (message)
+        );
 
-        //when
-        final ResponseEntity responseEntity = productController.deleteProduct (productId);
+        // Execute the POST request
+        mockMvc.perform (
+                post (urlTemplate, productId))
+                // Print
+                .andDo (print ())
 
-        //then
-        Assertions.assertTrue (responseEntity.getStatusCode ().is4xxClientError ());
+                // Validate the response code and content type
+                .andExpect (status ().isBadRequest ())
+                .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
+
+                // Validate the returned fields
+                .andExpect (jsonPath ("$.message", is ("what's the problem")));
     }
-
 
     @Test
     void addPhotoToProduct_thenOK () throws Exception {
@@ -187,7 +244,7 @@ class ProductControllerImplTest {
         MockMultipartFile multipartFile = mock (MockMultipartFile.class);
         when (multipartFile.getName ()).thenReturn ("file");
 
-        String message = "message";
+        String message = "what's the problem";
 
         // Setup our mocked service
         when (productService.addPhotoToProduct (
@@ -209,7 +266,7 @@ class ProductControllerImplTest {
                 .andExpect (content ().contentType (MediaType.APPLICATION_JSON))
 
                 // Validate the returned fields
-                .andExpect (jsonPath ("$.message", is ("message")))
+                .andExpect (jsonPath ("$.message", is ("what's the problem")))
                 .andExpect (jsonPath ("$.product", is (nullValue ())))
                 .andExpect (jsonPath ("$.success", is (false)));
     }

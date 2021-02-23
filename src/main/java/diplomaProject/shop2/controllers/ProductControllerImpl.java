@@ -42,17 +42,37 @@ public class ProductControllerImpl implements ProductController {
         //сделать чтобы возвращалось сообщение с продуктом ProductResultDTO
     }
 
-    @PostMapping("delete/{id}")
-    public ResponseEntity deleteProduct(
-            @PathVariable String id
-    ){
+//    @PostMapping("delete/{id}")
+//    public ResponseEntity deleteProduct(
+//            @PathVariable String id
+//    ){
+//        logger.info("ProductControllerImpl.deleteProduct is executed");
+//        logger.info("deleteProduct id = "+id);
+//        if(productService.deleteProductById(id)){
+//            logger.info("Product with id = %1 removed from the database", id);
+//            return ResponseEntity.ok().build();
+//        } else {
+//            return ResponseEntity.badRequest ().build ();
+//        }
+//    }
+
+    @PostMapping("delete/{productId}")
+    public ResponseEntity<ResultDTO> deleteProduct(@PathVariable Long productId){
         logger.info("ProductControllerImpl.deleteProduct is executed");
-        logger.info("deleteProduct id = "+id);
-        if(productService.deleteProductById(id)){
-            logger.info("Product with id = %1 removed from the database", id);
-            return ResponseEntity.ok().build();
+        logger.info("deleteProduct id = "+productId);
+
+        ProductResultDTO productResultDTO = productService.deleteProductById (productId);
+
+        if(productResultDTO.isSuccess ()){
+            return new ResponseEntity<>(
+                    new SuccessResult (productResultDTO.getMessage ()),
+                    HttpStatus.OK
+            );
         } else {
-            return ResponseEntity.badRequest ().build ();
+            return new ResponseEntity<>(
+                    new BadRequestResult (productResultDTO.getMessage ()),
+                    HttpStatus.BAD_REQUEST
+            );
         }
     }
 

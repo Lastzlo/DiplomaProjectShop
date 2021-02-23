@@ -12,7 +12,9 @@ public interface ProductService {
 
     List<ProductOutputDTO> getProducts ();
 
-    boolean deleteProductById (String id);
+//    boolean deleteProductById (String id);
+
+    ProductResultDTO deleteProductById (Long productId);
 
     ProductResultDTO addPhotoToProduct (MultipartFile multipartFile, Long id);
 

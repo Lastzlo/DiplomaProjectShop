@@ -47,20 +47,26 @@ public class ProductServiceImpl implements ProductService {
         return productDTOS;
     }
 
+//    @Override
+//    public boolean deleteProductById (String id) {
+//
+//        final long productId = Long.parseLong (id);
+//
+//        Optional<Product> product = productRepository.findById (productId);
+//
+//        if (product.isPresent ()){
+//            productRepository.delete (product.get ());
+//            return true;
+//        } else {
+//            return false;
+//        }
+//
+//    }
+
+
     @Override
-    public boolean deleteProductById (String id) {
-
-        final long productId = Long.parseLong (id);
-
-        Optional<Product> product = productRepository.findById (productId);
-
-        if (product.isPresent ()){
-            productRepository.delete (product.get ());
-            return true;
-        } else {
-            return false;
-        }
-
+    public ProductResultDTO deleteProductById (Long productId) {
+        return null;
     }
 
     @Override
