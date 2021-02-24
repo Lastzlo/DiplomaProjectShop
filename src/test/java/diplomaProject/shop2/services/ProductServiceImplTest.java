@@ -252,7 +252,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void addPhotoToProduct_whenPhotoResultDTONotSuccess (){
+    void addPhotoToProduct_whenPhotoResultDTOGetPhotoNotPresent (){
         // given
         Long productId = 10L;
         Product product = new Product ();
@@ -271,6 +271,7 @@ class ProductServiceImplTest {
         ProductResultDTO resultDTO = productService.addPhotoToProduct (multipartFile, productId);
 
         // then
+        Assertions.assertFalse (resultDTO.getProduct ().isPresent ());
         Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
         Assertions.assertFalse (resultDTO.isSuccess ());
 

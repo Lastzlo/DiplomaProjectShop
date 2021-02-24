@@ -101,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
             Product product = optionalProduct.get ();
 
             PhotoResultDTO photoResultDTO = photoService.savePhoto (multipartFile);
-            if(photoResultDTO.isSuccess ()) {
+            if(photoResultDTO.getPhoto ().isPresent ()) {
                 final Optional<Photo> photo = photoResultDTO.getPhoto ();
 
                 product.addPhoto (photo.get ());
