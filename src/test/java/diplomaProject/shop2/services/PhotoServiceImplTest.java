@@ -38,9 +38,24 @@ class PhotoServiceImplTest {
     @MockBean
     private PhotoRepository photoRepository;
 
+    @Test
+    void savePhoto_whenMultipartFileNeededArgumentsIsNull() {
+        // given
+        MultipartFile multipartFile = mock (MultipartFile.class);
+
+        when (multipartFile.getOriginalFilename ()).thenReturn (null);
+
+        // when
+        PhotoResultDTO resultDTO = photoService.savePhoto (multipartFile);
+
+        // then
+        Assertions.assertFalse (resultDTO.isSuccess ());
+        Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
+        Assertions.assertFalse (resultDTO.getPhoto ().isPresent ());
+    }
 
     @Test
-    void savePhoto_whenMultipartFileContentTypeIsNotAllowedContentType_thenPhotoResultDto() {
+    void savePhoto_whenMultipartFileContentTypeIsNotAllowedContentType() {
         // given
         MultipartFile multipartFile = mock (MultipartFile.class);
         when (multipartFile.getContentType ()).thenReturn ("text/plain");

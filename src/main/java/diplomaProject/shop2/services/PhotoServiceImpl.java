@@ -46,35 +46,54 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public PhotoResultDTO savePhoto (MultipartFile multipartFile) {
-        if (!isAllowedContentType (multipartFile.getContentType ())) {
-            final String message = "multipartFile is not AllowedContentType " +
-                    "because multipartFile.ContentType = "+multipartFile.getContentType ();
-            logger.info (message);
-            return new PhotoResultDTO (message);
-        } else {
-            Optional<File> optionalFile = convertMultiPartToFile(multipartFile);
 
-            if (optionalFile.isPresent ()){
-                File file = optionalFile.get ();
+        if (hasMultipartFileNeededArgumentsNotNull (multipartFile)) {
 
-                final String fileName = generateFileName(
-                        Objects.requireNonNull (multipartFile.getOriginalFilename ()));
+            if (isAllowedContentType (Objects.requireNonNull (multipartFile.getContentType ()))) {
+                Optional<File> optionalFile = convertMultiPartToFile(multipartFile);
 
-                final String savedFileSrc = amazonS3Service.saveFile (file, fileName);
+                if (optionalFile.isPresent ()){
+                    File file = optionalFile.get ();
 
-                file.delete ();
+                    final String fileName = generateFileName(
+                            Objects.requireNonNull (multipartFile.getOriginalFilename ()));
 
-                final Photo photo = new Photo (savedFileSrc);
-                final Photo photoFromDB = photoRepository.save (photo);
+                    final String savedFileSrc = amazonS3Service.saveFile (file, fileName);
 
-                final String message = "Save new photo to photoRepository complete";
-                logger.info (message);
-                return new PhotoResultDTO (message, Optional.of (photoFromDB));
+                    file.delete ();
+
+                    final Photo photo = new Photo (savedFileSrc);
+                    final Photo photoFromDB = photoRepository.save (photo);
+
+                    final String message = "Save new photo to photoRepository complete";
+                    logger.info (message);
+                    return new PhotoResultDTO (message, Optional.of (photoFromDB));
+                } else {
+                    final String message = "Error while converting MultiPart to File";
+                    logger.info (message);
+                    return new PhotoResultDTO (message);
+                }
             } else {
-                final String message = "Error while converting MultiPart to File";
+                final String message = "multipartFile is not AllowedContentType " +
+                        "because multipartFile.ContentType = "+multipartFile.getContentType ();
                 logger.info (message);
                 return new PhotoResultDTO (message);
             }
+        } else {
+            final String message = "multipartFile needed arguments is null";
+            logger.info (message);
+            return new PhotoResultDTO (message);
+        }
+    }
+
+    private boolean hasMultipartFileNeededArgumentsNotNull (MultipartFile multipartFile) {
+        try {
+            Objects.requireNonNull (multipartFile.getOriginalFilename (), "multipartFile.getOriginalFilename () should be not null");
+            Objects.requireNonNull (multipartFile.getContentType (), "multipartFile.getContentType () should be not null");
+            return true;
+        } catch (NullPointerException e) {
+            e.printStackTrace ();
+            return false;
         }
     }
 
