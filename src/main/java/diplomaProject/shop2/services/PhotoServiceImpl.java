@@ -70,18 +70,18 @@ public class PhotoServiceImpl implements PhotoService {
                     return new PhotoResultDTO (message, Optional.of (photoFromDB));
                 } else {
                     final String message = "Error while converting MultiPart to File";
-                    logger.info (message);
+                    logger.warn (message);
                     return new PhotoResultDTO (message);
                 }
             } else {
                 final String message = "multipartFile is not AllowedContentType " +
                         "because multipartFile.ContentType = "+multipartFile.getContentType ();
-                logger.info (message);
+                logger.warn (message);
                 return new PhotoResultDTO (message);
             }
         } else {
             final String message = "multipartFile needed arguments is null";
-            logger.info (message);
+            logger.warn (message);
             return new PhotoResultDTO (message);
         }
     }
@@ -92,7 +92,7 @@ public class PhotoServiceImpl implements PhotoService {
             Objects.requireNonNull (multipartFile.getContentType (), "multipartFile.getContentType () should be not null");
             return true;
         } catch (NullPointerException e) {
-            e.printStackTrace ();
+            logger.warn (e);
             return false;
         }
     }
@@ -106,7 +106,7 @@ public class PhotoServiceImpl implements PhotoService {
 
             return Optional.of (file);
         } catch (IOException e) {
-            e.printStackTrace ();
+            logger.warn (e);
             return Optional.empty ();
         }
     }
@@ -139,7 +139,7 @@ public class PhotoServiceImpl implements PhotoService {
         } else {
             final String message = "Photos is Empty";
 
-            logger.info (message);
+            logger.warn (message);
             return new SuccessResult (message);
         }
     }
@@ -192,7 +192,7 @@ public class PhotoServiceImpl implements PhotoService {
         } else {
             final String message = "Not found photo with id = "+ photoId;
 
-            logger.info (message);
+            logger.warn (message);
             return new BadResult (message);
         }
     }

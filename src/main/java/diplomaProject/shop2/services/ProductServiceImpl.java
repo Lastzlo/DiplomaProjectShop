@@ -89,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             final String message = "Not found product with id = "+ productId;
 
-            logger.info (message);
+            logger.warn (message);
             return new BadResult (message);
         }
     }
@@ -118,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             final String message = "Not found product with id = "+ id;
 
-            logger.info (message);
+            logger.warn (message);
             return new ProductResultDTO (message);
         }
     }
@@ -146,13 +146,13 @@ public class ProductServiceImpl implements ProductService {
                 final String message = "Not found photo with id = "+ photoId+
                         " in product with id = "+ productId;
 
-                logger.info (message);
+                logger.warn (message);
                 return new BadResult (message);
             }
         } else {
             final String message = "Not found product with id = "+ productId;
 
-            logger.info (message);
+            logger.warn (message);
             return new BadResult (message);
         }
     }
