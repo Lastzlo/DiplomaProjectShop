@@ -101,6 +101,9 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
     public void deleteFileByFileUrl (String fileUrl) {
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         amazonS3Client.deleteObject(new DeleteObjectRequest (bucketName, fileName));
+
+        String message = "Delete File By File Url complete";
+        logger.info (message);
     }
 
     @Override
@@ -108,5 +111,8 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
         DeleteObjectsRequest delObjReq = new DeleteObjectsRequest(bucketName)
                 .withKeys(filesUrls);
         amazonS3Client.deleteObjects(delObjReq);
+
+        String message = "Delete Files By File Urls complete";
+        logger.info (message);
     }
 }
