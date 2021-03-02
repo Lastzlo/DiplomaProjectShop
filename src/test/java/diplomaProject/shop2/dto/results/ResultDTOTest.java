@@ -2,7 +2,9 @@ package diplomaProject.shop2.dto.results;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 
+@TestPropertySource("/application-test.properties")
 class ResultDTOTest {
 
 

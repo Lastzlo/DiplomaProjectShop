@@ -2,7 +2,9 @@ package diplomaProject.shop2.model;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 
+@TestPropertySource("/application-test.properties")
 class ProductTest {
 
     @Test
