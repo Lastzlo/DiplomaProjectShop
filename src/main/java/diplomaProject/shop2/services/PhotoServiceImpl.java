@@ -4,6 +4,7 @@ import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.results.BadResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.dto.results.SuccessResult;
+import diplomaProject.shop2.model.AllowedPhotoContentType;
 import diplomaProject.shop2.model.Photo;
 import diplomaProject.shop2.repos.PhotoRepository;
 import diplomaProject.shop2.s3.AmazonS3Service;
@@ -28,8 +29,6 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Autowired
     private AmazonS3Service amazonS3Service;
-
-    private final String ALLOWED_CONTENT_TYPE = "image/png";
 
 
 //    @Override
@@ -112,7 +111,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     private boolean isAllowedContentType (String contentType){
-        return contentType.equals (ALLOWED_CONTENT_TYPE);
+        return AllowedPhotoContentType.isAllowedPhotoContentType (contentType);
     }
 
     private String generateFileName (String fileName) {

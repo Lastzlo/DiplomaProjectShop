@@ -58,6 +58,7 @@ class PhotoServiceImplTest {
     void savePhoto_whenMultipartFileContentTypeIsNotAllowedContentType() {
         // given
         MultipartFile multipartFile = mock (MultipartFile.class);
+        when (multipartFile.getOriginalFilename ()).thenReturn ("file");
         when (multipartFile.getContentType ()).thenReturn ("text/plain");
 
         // when
