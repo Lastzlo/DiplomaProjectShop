@@ -1,10 +1,8 @@
 package diplomaProject.shop2.s3;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.DeleteObjectsRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
+import diplomaProject.shop2.dto.amazonS3.S3ServiceResultDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,9 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
     private String endpointUrl;
     @Value("${amazonProperties.bucketName}")
     private String bucketName;
+
+    private static final String SAVE_COMPLETE = "Save file to Amazon S3 complete";
+    private static final String EXCEPTION_WHILE_SAVING = "Exception while saving file to Amazon S3";
 
 
 //    @Override
@@ -82,15 +83,26 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
 //    }
 
     @Override
-    public String saveFile (File file, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest (bucketName, fileName, file)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+    public S3ServiceResultDTO saveFile (File file, String fileName) {
 
-        String message = "Upload file complete";
-        String fileSrc = getPathByFileName (fileName);
+        try {
+            amazonS3Client.putObject(new PutObjectRequest (bucketName, fileName, file)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
 
-        logger.info (message);
-        return fileSrc;
+            String fileSrc = getPathByFileName (fileName);
+
+            String message = SAVE_COMPLETE;
+            logger.info (message);
+            return new S3ServiceResultDTO (message, fileSrc);
+        } catch (AmazonS3Exception e){
+            logger.warn (e);
+
+            String message = EXCEPTION_WHILE_SAVING;
+            logger.info (message);
+            return new S3ServiceResultDTO (message);
+        }
+
+
     }
 
     private String getPathByFileName (String fileName) {
