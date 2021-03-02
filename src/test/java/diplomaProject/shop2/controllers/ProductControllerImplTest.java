@@ -273,7 +273,7 @@ class ProductControllerImplTest {
     @Test
     void deletePhotoFromProduct_thenOK () throws Exception {
         // given
-        String urlTemplate = "/product/deletePhotoToProduct";
+        String urlTemplate = "/product/deletePhotoFromProduct";
         String productId = "5";
         String photoId = "10";
 
@@ -305,7 +305,7 @@ class ProductControllerImplTest {
     @Test
     void deletePhotoFromProduct_thenBadRequest () throws Exception {
         // given
-        String urlTemplate = "/product/deletePhotoToProduct";
+        String urlTemplate = "/product/deletePhotoFromProduct";
         String productId = "5";
         String photoId = "10";
 

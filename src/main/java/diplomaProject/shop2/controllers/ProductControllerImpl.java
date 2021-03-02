@@ -96,7 +96,7 @@ public class ProductControllerImpl implements ProductController {
         }
     }
 
-    @PostMapping("deletePhotoToProduct")
+    @PostMapping("deletePhotoFromProduct")
     public ResponseEntity<ResultDTO> deletePhotoFromProduct(
             @RequestParam (value = "photoId") Long photoId,
             @RequestParam (value = "productId") Long productId
