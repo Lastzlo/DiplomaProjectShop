@@ -1,5 +1,6 @@
 package diplomaProject.shop2.services;
 
+import diplomaProject.shop2.dto.amazonS3.S3ServiceResultDTO;
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.results.ResultDTO;
 import diplomaProject.shop2.model.Photo;
@@ -118,9 +119,38 @@ class PhotoServiceImplTest {
 //    }
 
     @Test
+    void savePhoto_whenS3ServiceResultGetFileSrcIsEmpty() {
+        // given
+
+        final MockMultipartFile multipartFile = new MockMultipartFile (
+                "file",
+                "file",
+                "image/png",
+                "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
+
+        String badResultMessage = "Bad result message";
+
+        when (amazonS3Service.saveFile (any(File.class), any(String.class)))
+                .thenReturn (new S3ServiceResultDTO (badResultMessage));
+
+
+        // when
+        PhotoResultDTO resultDTO = photoService.savePhoto (multipartFile);
+
+
+        // then
+        Assertions.assertFalse (resultDTO.isSuccess ());
+        Assertions.assertFalse (resultDTO.getMessage ().isEmpty ());
+        Assertions.assertEquals (resultDTO.getMessage (), badResultMessage);
+        Assertions.assertFalse (resultDTO.getPhoto ().isPresent ());
+
+        verify (amazonS3Service)
+                .saveFile (any(File.class), any(String.class));
+    }
+
+    @Test
     void savePhoto_thenPhotoResultDto() {
         // given
-        String fileSrc = "fileSrc";
 
         final MockMultipartFile multipartFile = new MockMultipartFile (
                 "file",
@@ -129,7 +159,7 @@ class PhotoServiceImplTest {
                 "This is a dummy file content".getBytes(StandardCharsets.UTF_8));
 
         when (amazonS3Service.saveFile (any(File.class), any(String.class)))
-                .thenReturn (fileSrc);
+                .thenReturn (new S3ServiceResultDTO ("result success","fileSrc"));
         when (photoRepository.save (any (Photo.class))).thenReturn (new Photo ());
 
         // when

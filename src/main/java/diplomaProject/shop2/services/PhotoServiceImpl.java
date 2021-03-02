@@ -1,5 +1,6 @@
 package diplomaProject.shop2.services;
 
+import diplomaProject.shop2.dto.amazonS3.S3ServiceResultDTO;
 import diplomaProject.shop2.dto.photo.PhotoResultDTO;
 import diplomaProject.shop2.dto.results.BadResult;
 import diplomaProject.shop2.dto.results.ResultDTO;
@@ -57,18 +58,24 @@ public class PhotoServiceImpl implements PhotoService {
                     final String fileName = generateFileName(
                             Objects.requireNonNull (multipartFile.getOriginalFilename ()));
 
-                    final String savedFileSrc = amazonS3Service.saveFile (file, fileName);
+                    final S3ServiceResultDTO s3ServiceResult = amazonS3Service.saveFile (file, fileName);
 
                     file.delete ();
 
-                    final Photo photo = new Photo (savedFileSrc);
-                    final Photo photoFromDB = photoRepository.save (photo);
+                    if(s3ServiceResult.getFileSrc ().isEmpty ()){
+                        return new PhotoResultDTO (s3ServiceResult.getMessage ());
+                    } else {
+                        String savedFileSrc = s3ServiceResult.getFileSrc ();
 
-                    final String message = "Save new photo to photoRepository complete";
-                    logger.info (message);
-                    return new PhotoResultDTO (message, Optional.of (photoFromDB));
+                        final Photo photo = new Photo (savedFileSrc);
+                        final Photo photoFromDB = photoRepository.save (photo);
+
+                        final String message = "Save new photo to photoRepository complete";
+                        logger.info (message);
+                        return new PhotoResultDTO (message, Optional.of (photoFromDB));
+                    }
                 } else {
-                    final String message = "Error while converting MultiPart to File";
+                    final String message = "Exception while converting MultiPart to File";
                     logger.warn (message);
                     return new PhotoResultDTO (message);
                 }
