@@ -2,7 +2,7 @@ package diplomaProject.shop2.dto.amazonS3;
 
 public class S3ServiceResultDTO {
 
-    protected String message = "Error occurred while uploading file";
+    protected String message = "Exception occurred while uploading file to Amazon S3";
 
     protected String fileSrc = "";
 
